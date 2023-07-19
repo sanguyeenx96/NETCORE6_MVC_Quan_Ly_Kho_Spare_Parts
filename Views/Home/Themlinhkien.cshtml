@@ -1,0 +1,249 @@
+﻿@model webspare.Models.Danhsachlinhkien
+
+@{
+    ViewData["Title"] = "Themlinhkien";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Active"] = "2";
+
+}
+<style>
+    .col-4 {
+        text-align: center;
+    }
+
+    .col-7 {
+        text-align: center;
+    }
+</style>
+<title>Thêm linh kiện</title>
+
+<script src="~/adminlte-master/plugins/jquery/jquery.min.js"></script>
+
+<section class="content-header">
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">Thêm linh kiện</h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="@Url.Action("Index", "Home")">Trang chủ</a></li>
+                        <li class="breadcrumb-item active">Thêm linh kiện</li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+</section>
+<section class="content">
+    <div class="container-fluid">
+        <div class="col-lg-12">
+            <form asp-controller="Home" asp-action="Themlinhkien_thucong" method="post" enctype="multipart/form-data">
+                <div class="card card-success collapsed-card ">
+                    <div class="card-header border-success ">
+                        <h3 class="card-title"><i class="fas fa-edit"> </i> Thêm linh kiện thủ công</h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool btn-success" data-card-widget="collapse">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group row">
+                            <label class="col-4 col-form-label">*Model</label>
+                            <div class="col-8">
+                                <select asp-for="Model" class="form-control" asp-items="ViewBag.tenmodel"></select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-4 col-form-label">Tên Jig</label>
+                            <div class="col-8">
+                                <input asp-for="Tenjig" class="form-control" placeholder="Tên Jig sử dụng linh kiện này" />
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-4 col-form-label">Mã Jig</label>
+                            <div class="col-8">
+                                <input asp-for="Majig" class="form-control" placeholder="Mã Jig sử dụng linh kiện này" />
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-4 col-form-label">*Tên linh kiện</label>
+                            <div class="col-8">
+                                <input asp-for="Tenlinhkien" class="form-control" placeholder="Nhập tên linh kiện" required="@(true)" />
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-4 col-form-label">*Mã linh kiện</label>
+                            <div class="col-8">
+                                <input asp-for="Malinhkien" class="form-control" placeholder="Nhập mã linh kiện" required="@(true)" />
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-4 col-form-label">Maker</label>
+                            <div class="col-8">
+                                <input asp-for="Maker" class="form-control" placeholder="Nhập tên maker" />
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-4 col-form-label">Đơn vị</label>
+                            <div class="col-8">
+                                @{
+                                    var selectList_donvi = new SelectList(new[]
+                                    {
+                                new  { Value = "pcs" , Text = "PCS" },
+                                new  { Value = "thùng" , Text = "Thùng" },
+                                                        }, "Value", "Text");
+                                }
+                                <select asp-for="Donvi" class="form-control" asp-items="@selectList_donvi"></select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-4 col-form-label">Đơn giá</label>
+                            <div class="col-8">
+                                <input asp-for="Dongia" class="form-control" placeholder="Nhập giá tiền" />
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-4 col-form-label">*Tồn kho</label>
+                            <div class="col-8">
+                                <input asp-for="Tonkho" class="form-control" required="@(true)" placeholder="Nhập số lượng hiện có" />
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-4 col-form-label">Ghi chú</label>
+                            <div class="col-8">
+                                <input asp-for="Ghichu" class="form-control" placeholder="Nhập ghi chú thêm" />
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-4 col-form-label">Hình ảnh</label>
+                            <div class="col-8">
+                                <input id="imageFile" name="imageFile" type="file" accept="image/*" class=" imageFile btn  btn-secondary btn-block" />
+                            </div>
+                        </div>
+                        <img src="" id="preview" hidden>
+                        <input id="image" type="text" asp-for="Image" class="form-control" hidden />
+
+                        <img style="width: 100%" src="" id="output">
+
+                    </div>
+                    <div class="card-footer">
+                        <button type="submit" class="btn btn-outline-success float-right btn-block"><i class="fas fa-check"> </i> Xác nhận</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="col-lg-12">
+            <div class="card card-info collapsed-card ">
+                <div class="card-header border-success ">
+                    <h3 class="card-title"><i class="fas fa-upload"> </i> Thêm linh kiện từ file Excel</h3>
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool btn-info" data-card-widget="collapse">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="form-group row">
+                        <label class="col-4 col-form-label">Model</label>
+                        <div class="col-8">
+                            <select asp-for="Model" class="form-control" asp-items="ViewBag.tenmodel"></select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-4 col-form-label">Chọn file</label>
+                        <div class="col-8">
+                            <input type="file" name="UploadedFile" class=" imageFile btn  btn-secondary btn-block" />
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <button class="btn btn-info float-right btn-block"><i class="fas fa-check"> </i> Xác nhận</button>
+                </div>
+            </div>
+            @*            </form>
+            *@
+        </div>
+    </div>
+</section>
+
+
+
+<script>
+    $(document).ready(function () {
+        $('#imageFile').change(function (evt) {
+            var files = evt.target.files;
+            var file = files[0];
+            if (file) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    document.getElementById('preview').src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+
+                delay(2000).then(() => ResizeImage());
+
+            }
+        });
+    });
+    function delay(time) {
+        return new Promise(resolve => setTimeout(resolve, time));
+    }
+
+    function ResizeImage() {
+        if (window.File && window.FileReader && window.FileList && window.Blob) {
+            var filesToUploads = document.getElementById('imageFile').files;
+            var file = filesToUploads[0];
+            if (file) {
+
+                var reader = new FileReader();
+                // Set the image once loaded into file reader
+                reader.onload = function (e) {
+
+                    var img = document.createElement("img");
+                    img.src = e.target.result;
+
+                    var canvas = document.createElement("canvas");
+                    var ctx = canvas.getContext("2d");
+                    ctx.drawImage(img, 0, 0);
+
+                    var MAX_WIDTH = 500;
+                    var MAX_HEIGHT = 500;
+                    var width = img.width;
+                    var height = img.height;
+
+                    if (width > height) {
+                        if (width > MAX_WIDTH) {
+                            height *= MAX_WIDTH / width;
+                            width = MAX_WIDTH;
+                        }
+                    } else {
+                        if (height > MAX_HEIGHT) {
+                            width *= MAX_HEIGHT / height;
+                            height = MAX_HEIGHT;
+                        }
+                    }
+                    canvas.width = width;
+                    canvas.height = height;
+                    var ctx = canvas.getContext("2d");
+                    ctx.drawImage(img, 0, 0, width, height);
+
+                    dataurl = canvas.toDataURL(file.type);
+                    document.getElementById('output').src = dataurl;
+                    console.log(dataurl);
+                    document.getElementById('image').value = dataurl;
+
+                    //document.getElementById('nutthunho').disabled = true;
+                    //document.getElementById('nutxacnhan').disabled = false;
+
+                }
+                reader.readAsDataURL(file);
+            }
+        } else {
+            alert('The File APIs are not fully supported in this browser.');
+        }
+    }
+</script>

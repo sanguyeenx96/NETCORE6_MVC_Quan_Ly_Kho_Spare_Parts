@@ -1,0 +1,120 @@
+﻿@model webspare.Models.Danhsachlinhkien
+
+@{
+    ViewData["Active"] = "Home";
+
+    ViewData["Title"] = "Sua";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<title>Sửa thông tin </title>
+
+<section class="content-header">
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">Sửa thông tin</h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="@Url.Action("Index", "Home")">Trang chủ</a></li>
+                        <li class="breadcrumb-item"><a href="javascript: history.go(-1)">Danh sách linh kiện</a></li>
+                        <li class="breadcrumb-item active">Edit </li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+</section>
+<section class="content">
+    <div class="container-fluid">
+        <form asp-controller="Home" asp-action="Sua" method="post" enctype="multipart/form-data">
+            <div class="row">
+                <div class="col-sm-12 col-md-6">
+                    <input type="hidden" asp-for="Id" />
+                    <input type="hidden" asp-for="Image" />
+                    <div class="card shadow">
+                        <div class="card-body">
+                            <div class="form-group row">
+                                <label class="col-5 col-form-label">Model</label>
+                                <div class="col-7">
+                                    <input asp-for="Model" class="form-control" readonly="@(true)" />
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-5 col-form-label">Tên Jig</label>
+                                <div class="col-7">
+                                    <input asp-for="Tenjig" class="form-control" placeholder="Tên Jig sử dụng linh kiện này" />
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-5 col-form-label">Mã Jig</label>
+                                <div class="col-7">
+                                    <input asp-for="Majig" class="form-control" placeholder="Mã Jig sử dụng linh kiện này" />
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="col-5 col-form-label">Tên linh kiện</label>
+                                <div class="col-7">
+                                    <input asp-for="Tenlinhkien" class="form-control" placeholder="Nhập tên linh kiện" />
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-5 col-form-label">Mã linh kiện</label>
+                                <div class="col-7">
+                                    <input asp-for="Malinhkien" class="form-control" placeholder="Nhập mã linh kiện" />
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-5 col-form-label">Maker</label>
+                                <div class="col-7">
+                                    <input asp-for="Maker" class="form-control" placeholder="Nhập tên maker"/>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-5 col-form-label">Đơn vị</label>
+                                <div class="col-7">
+                                    <input asp-for="Donvi" class="form-control" readonly="@(true)" />
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-5 col-form-label">Đơn giá</label>
+                                <div class="col-7">
+                                    <input asp-for="Dongia" class="form-control" placeholder="Nhập giá tiền" />
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-5 col-form-label">Tồn kho</label>
+                                <div class="col-7">
+                                    <input asp-for="Tonkho" class="form-control" required="@(true)" />
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-5 col-form-label">Ghi chú</label>
+                                <div class="col-7">
+                                    <input asp-for="Ghichu" class="form-control" placeholder="Nhập ghi chú thêm" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <a class="btn btn-default" href="javascript: history.go(-1)"><i class="fa fa-arrow-left"></i> Quay lại</a>
+                            <button type="submit" class="btn btn-warning float-right "><i class="fa fa-check"> </i> Hoàn thành</button>
+                        </div>
+                    </div>
+                </div>
+                @if (Model.Image != null)
+                {
+                    <div class="col-sm-12 col-md-6">
+                        <div class="card shadow">
+                            <div class="card-body">
+                                <img src="@Url.Content(Model.Image)" alt="Image" style="width:100%" />
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </form>
+    </div>
+</section>
+

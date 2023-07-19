@@ -1,0 +1,1227 @@
+﻿@model IEnumerable<webspare.Models.Dathang>
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    var hoten = HttpContextAccessor.HttpContext.Session.GetString("user");
+    string mode;
+    if (hoten != "Administrator")
+    {
+        mode = "user";
+    }
+    else
+    {
+        mode = "admin";
+    }
+}
+@{
+        ViewData["Active"] = "3";
+
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<title>Lịch sử đặt hàng</title>
+<style>
+    img {
+        width: 150px;
+        vertical-align: middle;
+    }
+
+    table.table-bordered.dataTable tbody th, table.table-bordered.dataTable tbody td {
+        border-bottom-width: 0;
+        vertical-align: middle;
+        text-align: center;
+    }
+</style>
+<script src="~/adminlte-master/plugins/jquery/jquery.min.js"></script>
+
+<section class="content-header">
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">Quản lý đặt hàng <b>@TempData["select_model"]</b> </h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="@Url.Action("Index", "Home")">Trang chủ</a></li>
+                        <li class="breadcrumb-item active">Đặt hàng</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="content">
+    <div class="container-fluid">
+        <div class="col-12">
+            @if (Model == null)
+            {
+                <div class="row">
+                    <div class="col-6">
+                            <div class="small-box bg-gradient-warning shadow ">
+                            <div class="inner">
+                                <h3>@TempData["sldangyeucau"]<sup style="font-size: 10px"> linh kiện</sup></h3>
+                                <p>Đang yêu cầu đặt hàng, chờ xác nhận </p>
+                            </div>
+                            <div class="icon">
+                                <i class="fas fa-bullhorn"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="small-box bg-gradient-info shadow ">
+                            <div class="inner">
+                                <h3>@TempData["sldangdat"]<sup style="font-size: 10px"> linh kiện</sup></h3>
+                                <p>Đang chờ hàng về</p>
+                            </div>
+                            <div class="icon">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr />
+
+                <div class="row" style="vertical-align:central">
+                    <div class="col-4">
+                        <form asp-controller="Home" asp-action="Lichsudathang" method="get">
+                            <input type="hidden" name="model" id="model" value="IJP" title="Xem chi tiết" />
+                            <div class="info-box bg-secondary">
+                                <button type="submit" class="btn bg-gradient-light btn-block"> <b> <i class="fa fa-folder-open"></i>  Model IJP</b> </button>
+                            </div>
+                        </form>
+                    </div>
+                    @if (@Convert.ToInt32(TempData["sldangyeucau_IJP"]) > 0)
+                    {
+                        <div class="col-4">
+                            <div class="info-box bg-secondary">
+                                <div class="info-box-content">
+                                    <span class="info-box-text text-center "> <i style="color:red" class="icon fas fa-exclamation-triangle"> </i>  Đang yêu cầu đặt hàng </span>
+                                    <span class="info-box-number text-center mb-0 "> @TempData["sldangyeucau_IJP"] <small>linh kiện</small></span>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    @if (@Convert.ToInt32(TempData["sldangdat_IJP"]) > 0)
+                    {
+                        <div class="col-4">
+                            <div class="info-box bg-secondary">
+                                <div class="info-box-content">
+                                    <span class="info-box-text text-center"> <i style="color:blue" class="icon fas fa-clock"> </i>  Đang chờ hàng về  </span>
+                                    <span class="info-box-number text-center mb-0 ">@TempData["sldangdat_IJP"] <small>linh kiện</small></span>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                <div class="row" style="vertical-align:central">
+                    <div class="col-4">
+                        <form asp-controller="Home" asp-action="Lichsudathang" method="get">
+                            <input type="hidden" name="model" id="model" value="LD2" />
+                            <div class="info-box bg-secondary">
+                                <button type="submit" class=" btn bg-gradient-light btn-block"> <b> <i class="fa fa-folder-open"></i>  Model LD2</b> </button>
+                            </div>
+                        </form>
+                    </div>
+                    @if (@Convert.ToInt32(TempData["sldangyeucau_LD2"]) > 0)
+                    {
+                        <div class="col-4">
+                            <div class="info-box bg-secondary">
+                                <div class="info-box-content">
+                                    <span class="info-box-text text-center "> <i style="color:red" class="icon fas fa-exclamation-triangle"> </i>  Đang yêu cầu đặt hàng </span>
+                                    <span class="info-box-number text-center mb-0 "> @TempData["sldangyeucau_LD2"] <small>linh kiện</small></span>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    @if (@Convert.ToInt32(TempData["sldangdat_LD2"]) > 0)
+                    {
+                        <div class="col-4">
+                            <div class="info-box bg-secondary">
+                                <div class="info-box-content">
+                                    <span class="info-box-text text-center"> <i style="color:blue" class="icon fas fa-clock"> </i>  Đang chờ hàng về  </span>
+                                    <span class="info-box-number text-center mb-0 ">@TempData["sldangdat_LD2"] <small>linh kiện</small></span>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                <div class="row" style="vertical-align:central">
+                    <div class="col-4">
+                        <form asp-controller="Home" asp-action="Lichsudathang" method="get">
+                            <input type="hidden" name="model" id="model" value="HONTAI" />
+                            <div class="info-box bg-secondary ">
+                                <button type="submit" class=" btn bg-gradient-light btn-block"> <b> <i class="fa fa-folder-open"></i>  Model HONTAI</b> </button>
+                            </div>
+                        </form>
+                    </div>
+                    @if (@Convert.ToInt32(TempData["sldangyeucau_HONTAI"]) > 0)
+                    {
+                        <div class="col-4">
+                            <div class="info-box bg-secondary ">
+                                <div class="info-box-content">
+                                    <span class="info-box-text text-center "> <i style="color:red" class="icon fas fa-exclamation-triangle"> </i>  Đang yêu cầu đặt hàng </span>
+                                    <span class="info-box-number text-center mb-0 "> @TempData["sldangyeucau_HONTAI"] <small>linh kiện</small></span>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    @if (@Convert.ToInt32(TempData["sldangdat_HONTAI"]) > 0)
+                    {
+                        <div class="col-4">
+                            <div class="info-box bg-secondary ">
+                                <div class="info-box-content">
+                                    <span class="info-box-text text-center"> <i style="color:blue" class="icon fas fa-clock"> </i>  Đang chờ hàng về  </span>
+                                    <span class="info-box-number text-center mb-0 ">@TempData["sldangdat_HONTAI"] <small>linh kiện</small></span>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                <div class="row" style="vertical-align:central">
+                    <div class="col-4">
+                        <form asp-controller="Home" asp-action="Lichsudathang" method="get">
+                            <input type="hidden" name="model" id="model" value="FIXING" />
+                            <div class="info-box bg-secondary">
+                                <button type="submit" class=" btn bg-gradient-light btn-block"> <b> <i class="fa fa-folder-open"></i>  Model FIXING</b> </button>
+                            </div>
+                        </form>
+                    </div>
+                    @if (@Convert.ToInt32(TempData["sldangyeucau_fix"]) > 0)
+                    {
+                        <div class="col-4">
+                            <div class="info-box bg-secondary ">
+                                <div class="info-box-content">
+                                    <span class="info-box-text text-center "> <i style="color:red" class="icon fas fa-exclamation-triangle"> </i>  Đang yêu cầu đặt hàng </span>
+                                    <span class="info-box-number text-center mb-0 "> @TempData["sldangyeucau_HONTAI"] <small>linh kiện</small></span>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    @if (@Convert.ToInt32(TempData["sldangdat_fix"]) > 0)
+                    {
+                        <div class="col-4">
+                            <div class="info-box bg-secondary ">
+                                <div class="info-box-content">
+                                    <span class="info-box-text text-center"> <i style="color:blue" class="icon fas fa-clock"> </i>  Đang chờ hàng về  </span>
+                                    <span class="info-box-number text-center mb-0 ">@TempData["sldangdat_fix"] <small>linh kiện</small></span>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                <div class="row" style="vertical-align:central">
+                    <div class="col-4">
+                        <form asp-controller="Home" asp-action="Lichsudathang" method="get">
+                            <input type="hidden" name="model" id="model" value="CSD" />
+                            <div class="info-box bg-secondary">
+                                <button type="submit" class=" btn bg-gradient-light btn-block"> <b> <i class="fa fa-folder-open"></i>  Model CSD</b> </button>
+                            </div>
+                        </form>
+                    </div>
+                    @if (@Convert.ToInt32(TempData["sldangyeucau_csd"]) > 0)
+                    {
+                        <div class="col-4">
+                            <div class="info-box bg-secondary ">
+                                <div class="info-box-content">
+                                    <span class="info-box-text text-center "> <i style="color:red" class="icon fas fa-exclamation-triangle"> </i>  Đang yêu cầu đặt hàng </span>
+                                    <span class="info-box-number text-center mb-0 "> @TempData["sldangyeucau_csd"] <small>linh kiện</small></span>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    @if (@Convert.ToInt32(TempData["sldangdat_csd"]) > 0)
+                    {
+                        <div class="col-4">
+                            <div class="info-box bg-secondary ">
+                                <div class="info-box-content">
+                                    <span class="info-box-text text-center"> <i style="color:blue" class="icon fas fa-clock"> </i>  Đang chờ hàng về  </span>
+                                    <span class="info-box-number text-center mb-0 ">@TempData["sldangdat_csd"] <small>linh kiện</small></span>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                <div class="row" style="vertical-align:central">
+                    <div class="col-4">
+                        <form asp-controller="Home" asp-action="Lichsudathang" method="get">
+                            <input type="hidden" name="model" id="model" value="ITB-DRIVER" />
+                            <div class="info-box bg-secondary">
+                                <button type="submit" class=" btn bg-gradient-light btn-block"> <b> <i class="fa fa-folder-open"></i>  Model ITB-DRIVER</b> </button>
+                            </div>
+                        </form>
+                    </div>
+                    @if (@Convert.ToInt32(TempData["sldangyeucau_itb"]) > 0)
+                    {
+                        <div class="col-4">
+                            <div class="info-box bg-secondary ">
+                                <div class="info-box-content">
+                                    <span class="info-box-text text-center "> <i style="color:red" class="icon fas fa-exclamation-triangle"> </i>  Đang yêu cầu đặt hàng </span>
+                                    <span class="info-box-number text-center mb-0 "> @TempData["sldangyeucau_itb"] <small>linh kiện</small></span>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    @if (@Convert.ToInt32(TempData["sldangdat_itb"]) > 0)
+                    {
+                        <div class="col-4">
+                            <div class="info-box bg-secondary ">
+                                <div class="info-box-content">
+                                    <span class="info-box-text text-center"> <i style="color:blue" class="icon fas fa-clock"> </i>  Đang chờ hàng về  </span>
+                                    <span class="info-box-number text-center mb-0 ">@TempData["sldangdat_itb"] <small>linh kiện</small></span>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+            }
+        </div>
+        @if (Model != null)
+        {
+            <div class="col-12">
+                <div class="card card-warning ">
+                    <div class="card-header border-transparent">
+                        <h3 class="card-title">
+                            <i class="nav-icon fas fa-bullhorn"></i>
+                            Danh sách yêu cầu đặt hàng  <span class="badge bg-light shadow">@TempData["this_sldangyeucau"] yêu cầu</span>
+                        </h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="maximize">
+                                <i class="fas fa-expand"></i>
+                            </button>
+                            <button type="button" class="btn btn-tool " data-card-widget="collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <table id="example1" class="table table-bordered table-hover table-responsive">
+                            <thead>
+                                <tr style="text-align:center ; font-size:small">
+                                    <th>
+                                        Trạng thái
+                                    </th>
+                                    <th>
+                                        Ngày yêu cầu
+                                    </th>
+                                    <th>
+                                        Tên Jig
+                                    </th>
+                                    <th>
+                                        Mã Jig
+                                    </th>
+                                    <th>
+                                        Tên linh kiện
+                                    </th>
+                                    <th>
+                                        Mã linh kiện
+                                    </th>
+                                    <th>
+                                        Hình ảnh
+                                    </th>
+                                    <th>
+                                        Số lượng
+                                    </th>
+                                    <th>
+                                        Đơn vị
+                                    </th>
+                                    <th>
+                                        Maker
+                                    </th>
+                                    <th>
+                                        Ghi chú
+                                    </th>
+                                    <th>
+                                        Đơn giá
+                                    </th>
+                                    <th>
+                                        Thành tiền
+                                    </th>
+                                    <th>
+                                        Người yêu cầu
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    @if (item.Trangthai == "Yêu cầu đặt hàng")
+                                    {
+                                        <tr>
+                                            <td style="text-align:center">
+                                                @if (mode == "user")
+                                                {
+                                                    <span class="badge bg-danger shadow"><i class="fas fa-exclamation-triangle"> </i> Yêu cầu đặt hàng</span>
+                                                }
+                                                @if (mode == "admin")
+                                                {
+                                                    <span class="badge bg-danger shadow" style="vertical-align:super"><i class="fas fa-exclamation-triangle"> </i> Yêu cầu đặt hàng</span>
+                                                    <a asp-action="Xacnhandathang" asp-route-id="@item.Id" class="btn btn-sm btn-success" title="Xác nhận đặt hàng">
+                                                        Xác nhận
+                                                    </a>
+                                                    <a class="btn btn-sm bg-danger" asp-action="Xoadathang" asp-route-id="@item.Id" title="Xoá yêu cầu">
+                                                        <i class="fas fa-trash"> </i>
+                                                    </a>
+                                                }
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Ngayyeucau)
+                                            </td>
+                                            <td>
+                                                @if (!String.IsNullOrEmpty(item.Tenjig))
+                                                {
+                                                    @Html.DisplayFor(modelItem => item.Tenjig)
+                                                }
+                                                else
+                                                {
+                                                    <a class="btn btn-block btn-default disabled" style="font-size:smaller">
+                                                        None
+                                                    </a>
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (!String.IsNullOrEmpty(item.Majig))
+                                                {
+                                                    @Html.DisplayFor(modelItem => item.Majig)
+                                                }
+                                                else
+                                                {
+                                                    <a class="btn btn-block btn-default disabled" style="font-size:smaller">
+                                                        None
+                                                    </a>
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (!String.IsNullOrEmpty(item.Tenlinhkien))
+                                                {
+                                                    @Html.DisplayFor(modelItem => item.Tenlinhkien)
+                                                }
+                                                else
+                                                {
+                                                    <a class="btn btn-block btn-default disabled" style="font-size:smaller">
+                                                        None
+                                                    </a>
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (!String.IsNullOrEmpty(item.Malinhkien))
+                                                {
+                                                    @Html.DisplayFor(modelItem => item.Malinhkien)
+                                                }
+                                                else
+                                                {
+                                                    <a class="btn btn-block btn-default disabled" style="font-size:smaller">
+                                                        None
+                                                    </a>
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (!String.IsNullOrEmpty(item.Image))
+                                                {
+                                                    <a href="#" class="pop">
+                                                        <img style="min-width:150px" src="@item.Image">
+                                                    </a>
+                                                }
+                                                else
+                                                {
+                                                    <a class="btn btn-block btn-default disabled" style="font-size:smaller">
+                                                        None
+                                                    </a>
+                                                }
+                                            </td>
+                                            <td>
+                                                <span class="badge bg-danger shadow" style="vertical-align:super"><i class="fas fa-exclamation-triangle"> </i> Số lượng đặt hàng: @item.Soluong pcs</span>
+                                                <span class="badge bg-dark" style="vertical-align:super"> Số lượng tồn kho: @item.Soluongtonkho pcs  </span>
+                                            </td>
+                                            <td>
+                                                @if (!String.IsNullOrEmpty(item.Donvi))
+                                                {
+                                                    @Html.DisplayFor(modelItem => item.Donvi)
+                                                }
+                                                else
+                                                {
+                                                    <a class="btn btn-block btn-default disabled" style="font-size:smaller">
+                                                        None
+                                                    </a>
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (!String.IsNullOrEmpty(item.Maker))
+                                                {
+                                                    @Html.DisplayFor(modelItem => item.Maker)
+                                                }
+                                                else
+                                                {
+                                                    <a class="btn btn-block btn-default disabled" style="font-size:smaller">
+                                                        None
+                                                    </a>
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (!String.IsNullOrEmpty(item.Ghichu))
+                                                {
+                                                    @Html.DisplayFor(modelItem => item.Ghichu)
+                                                }
+                                                else
+                                                {
+                                                    <a class="btn btn-block btn-default disabled" style="font-size:smaller">
+                                                        None
+                                                    </a>
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (item.Dongia != null)
+                                                {
+                                                    @Html.DisplayFor(modelItem => item.Dongia)
+                                                }
+                                                else
+                                                {
+                                                    <a class="btn btn-block btn-default disabled" style="font-size:smaller">
+                                                        None
+                                                    </a>
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (item.Thanhtien != null)
+                                                {
+                                                    @Html.DisplayFor(modelItem => item.Thanhtien)
+                                                }
+                                                else
+                                                {
+                                                    <a class="btn btn-block btn-default disabled" style="font-size:smaller">
+                                                        None
+                                                    </a>
+                                                }
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Nguoidathang)
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="card card-info ">
+                    <div class="card-header border-transparent ">
+                        <h3 class="card-title">
+                            <i class="nav-icon fas fa-clock"></i>
+                            Danh sách đang đặt hàng <span class="badge bg-warning shadow"> @TempData["this_sldangdathang"] đơn hàng</span>
+                        </h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="maximize">
+                                <i class="fas fa-expand"></i>
+                            </button>
+                            <button type="button" class="btn btn-tool " data-card-widget="collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <table id="example2" class="table table-bordered table-hover table-responsive">
+                            <thead>
+                                <tr style="text-align:center ; font-size:small">
+                                    <th>
+                                        Trạng thái
+                                    </th>
+                                    <th>
+                                        Thời gian
+                                    </th>
+                                    <th>
+                                        Tên Jig
+                                    </th>
+                                    <th>
+                                        Mã Jig
+                                    </th>
+                                    <th>
+                                        Tên linh kiện
+                                    </th>
+                                    <th>
+                                        Mã linh kiện
+                                    </th>
+                                    <th>
+                                        Hình ảnh
+                                    </th>
+
+                                    <th>
+                                        Số lượng
+                                    </th>
+                                    <th>
+                                        Đơn vị
+                                    </th>
+
+                                    <th>
+                                        Maker
+                                    </th>
+                                    <th>
+                                        Ghi chú
+                                    </th>
+
+                                    <th>
+                                        Đơn giá
+                                    </th>
+                                    <th>
+                                        Thành tiền
+                                    </th>
+                                    <th>
+                                        Người yêu cầu
+                                    </th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    @if (item.Trangthai == "Đang đặt hàng")
+                                    {
+                                        <tr>
+                                            <td style="text-align:center">
+                                                @if (mode == "user")
+                                                {
+                                                    <span class="badge bg-danger shadow"><i class="fas fa-clock"> </i> Đang đặt hàng</span>
+                                                }
+                                                @if (mode == "admin")
+                                                {
+                                                    <span class="badge bg-danger shadow" style="vertical-align:super"><i class="fas fa-clock"> </i> Đang đặt hàng</span>
+                                                    <div class="row" style="text-align:center">
+                                                        <div class="col-6">
+                                                            <form asp-controller="Home" asp-action="Xacnhanhangve" method="get">
+                                                                <input type="hidden" name="trangthaihangve" id="trangthaihangve" value="Đủ" />
+                                                                <input type="hidden" name="id" id="id" value="@item.Id" />
+                                                                <button type="submit" class="btn btn-sm btn-success " title="Xác nhận hàng về đủ">
+                                                                    Đủ
+                                                                </button>
+                                                            </form>
+                                                        </div>
+                                                        <div>
+                                                            <form asp-controller="Home" asp-action="Xacnhanhangve" method="get">
+                                                                <input type="hidden" name="trangthaihangve" id="trangthaihangve" value="Thiếu" />
+                                                                <input type="hidden" name="id" id="id" value="@item.Id" />
+                                                                <button type="submit" class="btn btn-sm bg-purple " title="Xác nhận hàng về thiếu">Thiếu</button>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                }
+                                            </td>
+                                            <td class="col-3">
+                                                <span class="badge bg-warning shadow"> Ngày dự kiến hàng về: <b>@Html.DisplayFor(modelItem => item.Ngaydukienhangve)</b> </span>
+                                                <span class="badge bg-dark"> Ngày đặt hàng: @Html.DisplayFor(modelItem => item.Ngaydathang)</span>
+                                                <span class="badge bg-dark"> Ngày yêu cầu: @Html.DisplayFor(modelItem => item.Ngayyeucau)</span>
+                                            </td>
+                                            <td>
+                                                @if (!String.IsNullOrEmpty(item.Tenjig))
+                                                {
+                                                    @Html.DisplayFor(modelItem => item.Tenjig)
+                                                }
+                                                else
+                                                {
+                                                    <a class="btn btn-block btn-default disabled" style="font-size:smaller">
+                                                        None
+                                                    </a>
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (!String.IsNullOrEmpty(item.Majig))
+                                                {
+                                                    @Html.DisplayFor(modelItem => item.Majig)
+                                                }
+                                                else
+                                                {
+                                                    <a class="btn btn-block btn-default disabled" style="font-size:smaller">
+                                                        None
+                                                    </a>
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (!String.IsNullOrEmpty(item.Tenlinhkien))
+                                                {
+                                                    @Html.DisplayFor(modelItem => item.Tenlinhkien)
+                                                }
+                                                else
+                                                {
+                                                    <a class="btn btn-block btn-default disabled" style="font-size:smaller">
+                                                        None
+                                                    </a>
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (!String.IsNullOrEmpty(item.Malinhkien))
+                                                {
+                                                    @Html.DisplayFor(modelItem => item.Malinhkien)
+                                                }
+                                                else
+                                                {
+                                                    <a class="btn btn-block btn-default disabled" style="font-size:smaller">
+                                                        None
+                                                    </a>
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (!String.IsNullOrEmpty(item.Image))
+                                                {
+                                                    <a href="#" class="pop">
+                                                        <img style="min-width:150px" src="@item.Image">
+                                                    </a>
+                                                }
+                                                else
+                                                {
+                                                    <a class="btn btn-block btn-default disabled" style="font-size:smaller">
+                                                        None
+                                                    </a>
+                                                }
+                                            </td>
+                                            <td>
+                                                <span class="badge bg-danger shadow" style="vertical-align:super"><i class="fas fa-exclamation-triangle"> </i> Số lượng đặt hàng: @item.Soluong pcs</span>
+                                                <span class="badge bg-dark" style="vertical-align:super"> Số lượng tồn kho: @item.Soluongtonkho pcs  </span>
+                                            </td>
+                                            <td>
+                                                @if (!String.IsNullOrEmpty(item.Donvi))
+                                                {
+                                                    @Html.DisplayFor(modelItem => item.Donvi)
+                                                }
+                                                else
+                                                {
+                                                    <a class="btn btn-block btn-default disabled" style="font-size:smaller">
+                                                        None
+                                                    </a>
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (!String.IsNullOrEmpty(item.Maker))
+                                                {
+                                                    @Html.DisplayFor(modelItem => item.Maker)
+                                                }
+                                                else
+                                                {
+                                                    <a class="btn btn-block btn-default disabled" style="font-size:smaller">
+                                                        None
+                                                    </a>
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (!String.IsNullOrEmpty(item.Ghichu))
+                                                {
+                                                    @Html.DisplayFor(modelItem => item.Ghichu)
+                                                }
+                                                else
+                                                {
+                                                    <a class="btn btn-block btn-default disabled" style="font-size:smaller">
+                                                        None
+                                                    </a>
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (item.Dongia != null)
+                                                {
+                                                    @Html.DisplayFor(modelItem => item.Dongia)
+                                                }
+                                                else
+                                                {
+                                                    <a class="btn btn-block btn-default disabled" style="font-size:smaller">
+                                                        None
+                                                    </a>
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (item.Thanhtien != null)
+                                                {
+                                                    @Html.DisplayFor(modelItem => item.Thanhtien)
+                                                }
+                                                else
+                                                {
+                                                    <a class="btn btn-block btn-default disabled" style="font-size:smaller">
+                                                        None
+                                                    </a>
+                                                }
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Nguoidathang)
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="card card-navy">
+                    <div class="card-header border-transparent ">
+                        <h3 class="card-title">
+                            <i class="nav-icon fas fa-list"></i>
+                            Danh sách hàng về thiếu <span class="badge bg-warning shadow"> @TempData["this_slhangvethieu"] đơn hàng</span>
+                        </h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="maximize">
+                                <i class="fas fa-expand"></i>
+                            </button>
+                            <button type="button" class="btn btn-tool " data-card-widget="collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <table id="example22" class="table table-bordered table-hover table-responsive">
+                            <thead>
+                                <tr style="text-align:center ; font-size:small">
+                                    <th>
+                                        Trạng thái
+                                    </th>
+                                    <th>
+                                        Thời gian
+                                    </th>
+                                    <th>
+                                        Số lượng
+                                    </th>
+                                    <th>
+                                        Tên Jig
+                                    </th>
+                                    <th>
+                                        Mã Jig
+                                    </th>
+                                    <th>
+                                        Tên linh kiện
+                                    </th>
+                                    <th>
+                                        Mã linh kiện
+                                    </th>
+                                    <th>
+                                        Hình ảnh
+                                    </th>
+                                    <th>
+                                        Đơn vị
+                                    </th>
+
+                                    <th>
+                                        Maker
+                                    </th>
+                                    <th>
+                                        Ghi chú
+                                    </th>
+
+                                    <th>
+                                        Đơn giá
+                                    </th>
+                                    <th>
+                                        Thành tiền
+                                    </th>
+                                    <th>
+                                        Người yêu cầu
+                                    </th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    @if (item.Trangthai == "Hàng về thiếu")
+                                    {
+                                        int soluongconlai = Convert.ToInt32(item.Soluong) - Convert.ToInt32(item.Soluongvedot1);
+
+                                        <tr>
+                                            <td style="text-align:center">
+                                                @if (mode == "user")
+                                                {
+                                                    <span class="badge bg-danger shadow"><i class="fas fa-clock"> </i> Chờ về lần 2</span>
+                                                }
+                                                @if (mode == "admin")
+                                                {
+                                                    <span class="badge bg-danger shadow" style="vertical-align:super"><i class="fas fa-clock"> </i> Chờ về lần 2</span>
+                                                    <form asp-controller="Home" asp-action="Xacnhanhangve" method="get">
+                                                        <input type="hidden" name="trangthaihangve" id="trangthaihangve" value="final" />
+                                                        <input type="hidden" name="id" id="id" value="@item.Id" />
+                                                        <button type="submit" class="btn btn-sm btn-success " title="Xác nhận hàng về đủ">
+                                                            Xác nhận
+                                                        </button>
+                                                    </form>
+                                                }
+                                            </td>
+                                            <td>
+                                                <span class="badge bg-warning shadow"> Ngày dự kiến hàng về đợt 2: <b>@Html.DisplayFor(modelItem => item.Ngaydukienhangvedot2)</b> </span>
+                                                <span class="badge bg-dark"> Ngày hàng về đợt 1: @Html.DisplayFor(modelItem => item.Ngayhangve)</span>
+                                                <span class="badge bg-dark"> Ngày đặt hàng: @Html.DisplayFor(modelItem => item.Ngaydathang)</span>
+                                            </td>
+                                            <td class="col-3">
+                                                <span class="badge bg-danger shadow" style="vertical-align:super"><i class="fas fa-info"> </i> Còn thiếu @soluongconlai pcs</span>
+
+                                                <span class="badge bg-warning"> Số lượng về đợt 1: @Html.DisplayFor(modelItem => item.Soluongvedot1) pcs</span>
+                                                <span class="badge bg-dark"> Số lượng đặt hàng: @Html.DisplayFor(modelItem => item.Soluong) pcs</span>
+                                            </td>
+                                            <td>
+                                                @if (!String.IsNullOrEmpty(item.Tenjig))
+                                                {
+                                                    @Html.DisplayFor(modelItem => item.Tenjig)
+                                                }
+                                                else
+                                                {
+                                                    <a class="btn btn-block btn-default disabled" style="font-size:smaller">
+                                                        None
+                                                    </a>
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (!String.IsNullOrEmpty(item.Majig))
+                                                {
+                                                    @Html.DisplayFor(modelItem => item.Majig)
+                                                }
+                                                else
+                                                {
+                                                    <a class="btn btn-block btn-default disabled" style="font-size:smaller">
+                                                        None
+                                                    </a>
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (!String.IsNullOrEmpty(item.Tenlinhkien))
+                                                {
+                                                    @Html.DisplayFor(modelItem => item.Tenlinhkien)
+                                                }
+                                                else
+                                                {
+                                                    <a class="btn btn-block btn-default disabled" style="font-size:smaller">
+                                                        None
+                                                    </a>
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (!String.IsNullOrEmpty(item.Malinhkien))
+                                                {
+                                                    @Html.DisplayFor(modelItem => item.Malinhkien)
+                                                }
+                                                else
+                                                {
+                                                    <a class="btn btn-block btn-default disabled" style="font-size:smaller">
+                                                        None
+                                                    </a>
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (!String.IsNullOrEmpty(item.Image))
+                                                {
+                                                    <a href="#" class="pop">
+                                                        <img style="min-width:150px" src="@item.Image">
+                                                    </a>
+                                                }
+                                                else
+                                                {
+                                                    <a class="btn btn-block btn-default disabled" style="font-size:smaller">
+                                                        None
+                                                    </a>
+                                                }
+                                            </td>
+
+                                            <td>
+                                                @if (!String.IsNullOrEmpty(item.Donvi))
+                                                {
+                                                    @Html.DisplayFor(modelItem => item.Donvi)
+                                                }
+                                                else
+                                                {
+                                                    <a class="btn btn-block btn-default disabled" style="font-size:smaller">
+                                                        None
+                                                    </a>
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (!String.IsNullOrEmpty(item.Maker))
+                                                {
+                                                    @Html.DisplayFor(modelItem => item.Maker)
+                                                }
+                                                else
+                                                {
+                                                    <a class="btn btn-block btn-default disabled" style="font-size:smaller">
+                                                        None
+                                                    </a>
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (!String.IsNullOrEmpty(item.Ghichu))
+                                                {
+                                                    @Html.DisplayFor(modelItem => item.Ghichu)
+                                                }
+                                                else
+                                                {
+                                                    <a class="btn btn-block btn-default disabled" style="font-size:smaller">
+                                                        None
+                                                    </a>
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (item.Dongia != null)
+                                                {
+                                                    @Html.DisplayFor(modelItem => item.Dongia)
+                                                }
+                                                else
+                                                {
+                                                    <a class="btn btn-block btn-default disabled" style="font-size:smaller">
+                                                        None
+                                                    </a>
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (item.Thanhtien != null)
+                                                {
+                                                    @Html.DisplayFor(modelItem => item.Thanhtien)
+                                                }
+                                                else
+                                                {
+                                                    <a class="btn btn-block btn-default disabled" style="font-size:smaller">
+                                                        None
+                                                    </a>
+                                                }
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Nguoidathang)
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="card card-olive ">
+                    <div class="card-header border-transparent">
+                        <h3 class="card-title">
+                            <i class="nav-icon fas fa-database"></i>
+                            Danh sách lịch sử hàng đã về <span class="badge bg-warning shadow"> @TempData["this_slhangdave"] đơn hàng</span>
+
+                        </h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="maximize">
+                                <i class="fas fa-expand"></i>
+                            </button>
+                            <button type="button" class="btn btn-tool " data-card-widget="collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <table id="example3" class="table table-bordered table-hover table-responsive">
+                            <thead>
+                                <tr style="text-align:center ; font-size:small">
+                                    <th>
+                                        Trạng thái
+                                    </th>
+                                    <th>
+                                        Thời gian
+                                    </th>
+                                    <th>
+                                        Số lượng
+                                    </th>
+                                    <th>
+                                        Tên linh kiện
+                                    </th>
+                                    <th>
+                                        Mã linh kiện
+                                    </th>
+                                    <th>
+                                        Hình ảnh
+                                    </th>
+
+                                    <th>
+                                        Đơn vị
+                                    </th>
+                                    <th>
+                                        Maker
+                                    </th>
+                                    <th>
+                                        Ghi chú
+                                    </th>
+                                    <th>
+                                        Đơn giá
+                                    </th>
+                                    <th>
+                                        Thành tiền
+                                    </th>
+                                    <th>
+                                        Người yêu cầu
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    @if (item.Trangthai == "Hàng đã về")
+                                    {
+                                        <tr>
+                                            <td style="text-align:center">
+                                                <span class="badge badge-success shadow">Hàng đã về đủ</span>
+                                            </td>
+                                            <td>
+                                                @if (!String.IsNullOrEmpty(item.Ngayhangvedot2))
+                                                {
+                                                    <span class="badge bg-primary"> Ngày hàng về đợt 2: <b>@Html.DisplayFor(modelItem => item.Ngayhangvedot2)</b> </span>
+                                                }
+                                                @if (!String.IsNullOrEmpty(item.Ngaydukienhangvedot2))
+                                                {
+                                                    <span class="badge bg-dark"> Ngày dự kiến hàng về đợt 2: <b>@Html.DisplayFor(modelItem => item.Ngaydukienhangvedot2)</b> </span>
+                                                }
+                                                <span class="badge bg-primary"> Ngày hàng về đợt 1: @Html.DisplayFor(modelItem => item.Ngayhangve)</span>
+                                                <span class="badge bg-dark"> Ngày đặt hàng: @Html.DisplayFor(modelItem => item.Ngaydathang)</span>
+                                            </td>
+                                            <td>
+                                                @if (item.Soluongvedot2 != null)
+                                                {
+                                                    <span class="badge bg-primary"> Số lượng về đợt 2: <b>@Html.DisplayFor(modelItem => item.Soluongvedot2)</b> </span>
+                                                }
+                                                <span class="badge bg-primary"> Số lượng về đợt 1: <b>@Html.DisplayFor(modelItem => item.Soluongvedot1)</b> </span>
+                                                <span class="badge bg-dark"> Số lượng đặt hàng: <b>@Html.DisplayFor(modelItem => item.Soluong)</b> </span>
+                                                <span class="badge bg-dark"> Số lượng tồn kho khi đặt: <b>@Html.DisplayFor(modelItem => item.Soluongtonkho)</b> </span>
+
+                                            </td>
+                                            <td>
+                                                @if (!String.IsNullOrEmpty(item.Tenlinhkien))
+                                                {
+                                                    @Html.DisplayFor(modelItem => item.Tenlinhkien)
+                                                }
+                                                else
+                                                {
+                                                    <a class="btn btn-block btn-default disabled" style="font-size:smaller">
+                                                        None
+                                                    </a>
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (!String.IsNullOrEmpty(item.Malinhkien))
+                                                {
+                                                    @Html.DisplayFor(modelItem => item.Malinhkien)
+                                                }
+                                                else
+                                                {
+                                                    <a class="btn btn-block btn-default disabled" style="font-size:smaller">
+                                                        None
+                                                    </a>
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (!String.IsNullOrEmpty(item.Image))
+                                                {
+                                                    <a href="#" class="pop">
+                                                        <img style="min-width:150px" src="@item.Image">
+                                                    </a>
+                                                }
+                                                else
+                                                {
+                                                    <a class="btn btn-block btn-default disabled" style="font-size:smaller">
+                                                        None
+                                                    </a>
+                                                }
+                                            </td>
+
+                                            <td>
+                                                @if (!String.IsNullOrEmpty(item.Donvi))
+                                                {
+                                                    @Html.DisplayFor(modelItem => item.Donvi)
+                                                }
+                                                else
+                                                {
+                                                    <a class="btn btn-block btn-default disabled" style="font-size:smaller">
+                                                        None
+                                                    </a>
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (!String.IsNullOrEmpty(item.Maker))
+                                                {
+                                                    @Html.DisplayFor(modelItem => item.Maker)
+                                                }
+                                                else
+                                                {
+                                                    <a class="btn btn-block btn-default disabled" style="font-size:smaller">
+                                                        None
+                                                    </a>
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (!String.IsNullOrEmpty(item.Ghichu))
+                                                {
+                                                    @Html.DisplayFor(modelItem => item.Ghichu)
+                                                }
+                                                else
+                                                {
+                                                    <a class="btn btn-block btn-default disabled" style="font-size:smaller">
+                                                        None
+                                                    </a>
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (item.Dongia != null)
+                                                {
+                                                    @Html.DisplayFor(modelItem => item.Dongia)
+                                                }
+                                                else
+                                                {
+                                                    <a class="btn btn-block btn-default disabled" style="font-size:smaller">
+                                                        None
+                                                    </a>
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (item.Thanhtien != null)
+                                                {
+                                                    @Html.DisplayFor(modelItem => item.Thanhtien)
+                                                }
+                                                else
+                                                {
+                                                    <a class="btn btn-block btn-default disabled" style="font-size:smaller">
+                                                        None
+                                                    </a>
+                                                }
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Nguoidathang)
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</section>
+
+<div class="modal fade" id="imagemodal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <img src="" class="imagepreview" style="width: 100%;">
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $(function () {
+        $('.pop').on('click', function () {
+            $('.imagepreview').attr('src', $(this).find('img').attr('src'));
+            $('#imagemodal').modal('show');
+        });
+    });
+</script>
+
+
+
+
+
+
+
+
+
+
+

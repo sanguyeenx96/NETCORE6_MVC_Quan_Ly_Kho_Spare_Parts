@@ -1,0 +1,176 @@
+﻿@model webspare.Models.Danhsachlinhkien
+
+@{
+    ViewData["Active"] = "1";
+
+    ViewData["Title"] = "Xoa";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<title>Xác nhận xoá linh kiện</title>
+
+<style>
+    .col-7 {
+        text-align: center;
+    }
+</style>
+
+<section class="content-header">
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">Xoá thông tin</h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="@Url.Action("Index", "Home")">Trang chủ</a></li>
+                        <li class="breadcrumb-item"><a href="javascript: history.go(-1)">Danh sách linh kiện</a></li>
+                        <li class="breadcrumb-item active">Delete </li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+</section>
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12 col-md-6">
+                <div class="card bg-danger shadow">
+                    <div class="card-body">
+                        @if (Model.Model != null)
+                        {
+                            <div class="form-group row">
+                                <label class="col-5 col-form-label">Model</label>
+                                <div class="col-7">
+                                    @Html.DisplayFor(model => model.Model)
+                                </div>
+                            </div>
+                        }
+                        @if (Model.Tenjig != null)
+                        {
+                            <div class="form-group row">
+                                <label class="col-5 col-form-label">Tên Jig</label>
+                                <div class="col-7">
+                                    @Html.DisplayFor(model => model.Tenjig)
+                                </div>
+                            </div>
+                        }
+                        @if (Model.Majig != null)
+                        {
+                            <div class="form-group row">
+                                <label class="col-5 col-form-label">Mã Jig</label>
+                                <div class="col-7">
+                                    @Html.DisplayFor(model => model.Majig)
+                                </div>
+                            </div>
+                        }
+                        @if (Model.Tenlinhkien != null)
+                        {
+                            <div class="form-group row">
+                                <label class="col-5 col-form-label">Tên linh kiện</label>
+                                <div class="col-7">
+                                    @Html.DisplayFor(model => model.Tenlinhkien)
+                                </div>
+                            </div>
+                        }
+                        @if (Model.Malinhkien != null)
+                        {
+                            <div class="form-group row">
+                                <label class="col-5 col-form-label">Mã linh kiện</label>
+                                <div class="col-7">
+                                    @Html.DisplayFor(model => model.Malinhkien)
+                                </div>
+                            </div>
+                        }
+                        @if (Model.Maker != null)
+                        {
+                            <div class="form-group row">
+                                <label class="col-5 col-form-label">Maker</label>
+                                <div class="col-7">
+                                    @Html.DisplayFor(model => model.Maker)
+                                </div>
+                            </div>
+                        }
+                        @if (Model.Donvi != null)
+                        {
+                            <div class="form-group row">
+                                <label class="col-5 col-form-label">Đơn vị</label>
+                                <div class="col-7">
+                                    @Html.DisplayFor(model => model.Donvi)
+                                </div>
+                            </div>
+                        }
+                        @if (Model.Dongia != null)
+                        {
+                            <div class="form-group row">
+                                <label class="col-5 col-form-label">Đơn giá</label>
+                                <div class="col-7">
+                                    @Html.DisplayFor(model => model.Dongia)
+                                </div>
+                            </div>
+                        }
+                        @if (Model.Tonkho != null)
+                        {
+                            <div class="form-group row">
+                                <label class="col-5 col-form-label">Tồn kho</label>
+                                <div class="col-7">
+                                    @Html.DisplayFor(model => model.Tonkho)
+                                </div>
+                            </div>
+                        }
+                        @if (Model.Ghichu != null)
+                        {
+                            <div class="form-group row">
+                                <label class="col-5 col-form-label">Ghi chú</label>
+                                <div class="col-7">
+                                    @Html.DisplayFor(model => model.Ghichu)
+                                </div>
+                            </div>
+                        }
+                    </div>
+                    <div class="card-footer">
+                        <form asp-action="Xoa">
+                            <input type="hidden" asp-for="Id" />
+                            <a class="btn btn-default" href="javascript: history.go(-1)"><i class="fa fa-arrow-left"></i> Quay lại</a>
+                            <button type="submit" class="btn btn-danger float-right "><i class="fa fa-check"> </i> Xác nhận</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            @if (Model.Image != null)
+            {
+                <div class="col-sm-12 col-md-6">
+                    <div class="card shadow">
+                        <div class="card-body">
+                            <img src="@Url.Content(Model.Image)" alt="Image" style="width:100%" />
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

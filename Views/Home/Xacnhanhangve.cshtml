@@ -1,0 +1,409 @@
+﻿@model webspare.Models.Dathang
+
+@{
+    ViewData["Title"] = "Xacnhanhangve";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Active"] = "3";
+
+}
+<title>Xác nhận hàng đã về</title>
+
+<style>
+    .col-5 {
+        text-align: center;
+    }
+
+    .col-7 {
+        text-align: center;
+    }
+</style>
+<section class="content-header">
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">
+                        Xác nhận hàng về
+                        @if (ViewBag.trangthai == "Đủ")
+                        {
+                            <span style="vertical-align:super" class="badge badge-success right">Hàng về đủ</span>
+                        }
+                        @if (ViewBag.trangthai == "Thiếu")
+                        {
+                            <span style="vertical-align:super" class="badge bg-purple right">Hàng về thiếu</span>
+                        }
+                        @if (ViewBag.trangthai == "final")
+                        {
+                            <span style="vertical-align:super" class="badge bg-purple right">Hàng về đợt 2</span>
+                        }
+                    </h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="@Url.Action("Index", "Home")">Trang chủ</a></li>
+                        <li class="breadcrumb-item"><a href="javascript: history.go(-1)">Lịch sử đặt hàng</a></li>
+                        <li class="breadcrumb-item active">Xác nhận</li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+</section>
+<section class="content">
+    <div class="container-fluid">
+        <form asp-controller="Home" asp-action="Xacnhanhangve" method="post" enctype="multipart/form-data">
+            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="Maker" />
+            <input type="hidden" asp-for="Donvi" />
+            <input type="hidden" asp-for="Dongia" />
+            <input type="hidden" asp-for="Thanhtien" />
+            <input type="hidden" asp-for="Nguoidathang" />
+            <input type="hidden" asp-for="Soluongtonkho" />
+            <input type="hidden" asp-for="Image" />
+            <div class="row">
+                <div class="col-sm-12 col-md-6">
+                    @if (ViewBag.trangthai == "Đủ")
+                    {
+                        <div class="card shadow">
+                            <div class="card-body">
+                                <div class="form-group row">
+                                    <label class="col-5 col-form-label">Model</label>
+                                    <div class="col-7">
+                                        <input asp-for="Model" class="form-control" readonly="readonly" />
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-5 col-form-label">Ngày yêu cầu</label>
+                                    <div class="col-7">
+                                        <input asp-for="Ngayyeucau" class="form-control" readonly="readonly" />
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-5 col-form-label">Ngày đặt hàng</label>
+                                    <div class="col-7">
+                                        <input asp-for="Ngaydathang" class="form-control" readonly="readonly" />
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-5 col-form-label">Ngày hàng về</label>
+                                    <div class="col-7">
+                                        <input asp-for="Ngayhangve" class="form-control" readonly="readonly" value="@DateTime.Now.ToString("yyyy/MM/dd")" />
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-5 col-form-label">Tên Jig</label>
+                                    <div class="col-7">
+                                        <input asp-for="Tenjig" class="form-control" readonly="readonly" />
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-5 col-form-label">Mã Jig</label>
+                                    <div class="col-7">
+                                        <input asp-for="Majig" class="form-control" readonly="readonly" />
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-5 col-form-label">Tên linh kiện</label>
+                                    <div class="col-7">
+                                        <input asp-for="Tenlinhkien" class="form-control" readonly="readonly" />
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-5 col-form-label">Mã linh kiện</label>
+                                    <div class="col-7">
+                                        <input asp-for="Malinhkien" class="form-control" readonly="readonly" />
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-5 col-form-label">Ghi chú</label>
+                                    <div class="col-7">
+                                        <input asp-for="Ghichu" class="form-control" readonly="readonly" />
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-5 col-form-label">Trạng thái</label>
+                                    <div class="input-group col-7">
+                                        <input asp-for="Trangthai" class="form-control" value="Hàng đã về" readonly="readonly" />
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-5 col-form-label">Số lượng đặt hàng</label>
+                                    <div class="input-group col-7">
+                                        <input asp-for="Soluong" class="form-control" readonly="readonly" />
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">@Model.Donvi</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card bg-lightblue">
+                                    <div class="card-body">
+                                        <div class="form-group row" style="margin-top:10px">
+                                            <label class="col-5 col-form-label">Số lượng hàng về</label>
+                                            <div class="input-group col-7">
+                                                <input asp-for="Soluongvedot1" class="form-control" value="" required="@(true)" />
+                                                <div class="input-group-append">
+                                                    <span class="input-group-text">@Model.Donvi</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <a class="btn btn-default" href="javascript: history.go(-1)"><i class="fa fa-arrow-left"></i> Quay lại</a>
+                                <input type="hidden" name="trangthaihangve" id="trangthaihangve" value="Đủ" />
+                                <button type="submit" class="btn btn-success float-right "><i class="fa fa-check"> </i> Xác nhận</button>
+                            </div>
+                        </div>
+                    }
+                    @if (ViewBag.trangthai == "Thiếu")
+                    {
+                        <div class="card shadow">
+                            <div class="card-body">
+                                <div class="form-group row">
+                                    <label class="col-5 col-form-label">Model</label>
+                                    <div class="col-7">
+                                        <input asp-for="Model" class="form-control" readonly="readonly" />
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-5 col-form-label">Ngày yêu cầu</label>
+                                    <div class="col-7">
+                                        <input asp-for="Ngayyeucau" class="form-control" readonly="readonly" />
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-5 col-form-label">Ngày đặt hàng</label>
+                                    <div class="col-7">
+                                        <input asp-for="Ngaydathang" class="form-control" readonly="readonly" />
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-5 col-form-label">Ngày dự kiến hàng về</label>
+                                    <div class="col-7">
+                                        <input asp-for="Ngaydukienhangve" class="form-control" readonly="readonly" />
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-5 col-form-label">Ngày hàng về đợt 1</label>
+                                    <div class="col-7">
+                                        <input asp-for="Ngayhangve" class="form-control" readonly="readonly" value="@DateTime.Now.ToString("yyyy/MM/dd")" />
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-5 col-form-label">Tên Jig</label>
+                                    <div class="col-7">
+                                        <input asp-for="Tenjig" class="form-control" readonly="readonly" />
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-5 col-form-label">Mã Jig</label>
+                                    <div class="col-7">
+                                        <input asp-for="Majig" class="form-control" readonly="readonly" />
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-5 col-form-label">Tên linh kiện</label>
+                                    <div class="col-7">
+                                        <input asp-for="Tenlinhkien" class="form-control" readonly="readonly" />
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-5 col-form-label">Mã linh kiện</label>
+                                    <div class="col-7">
+                                        <input asp-for="Malinhkien" class="form-control" readonly="readonly" />
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-5 col-form-label">Ghi chú</label>
+                                    <div class="col-7">
+                                        <input asp-for="Ghichu" class="form-control" readonly="readonly" />
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-5 col-form-label">Trạng thái</label>
+                                    <div class="input-group col-7">
+                                        <input asp-for="Trangthai" class="form-control" value="Hàng về thiếu" readonly="readonly" />
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-5 col-form-label">Số lượng đặt hàng</label>
+                                    <div class="input-group col-7">
+                                        <input asp-for="Soluong" class="form-control" readonly="readonly" />
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">@Model.Donvi</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card bg-lightblue">
+                                    <div class="card-body">
+                                        <div class="form-group row" style="margin-top:10px">
+                                            <label class="col-5 col-form-label">Số lượng hàng về</label>
+                                            <div class="input-group col-7">
+                                                <input asp-for="Soluongvedot1" class="form-control" value="" required="@(true)" />
+                                                <div class="input-group-append">
+                                                    <span class="input-group-text">@Model.Donvi</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row" style="margin-top: 10px">
+                                            <label class="col-5 col-form-label">Ngày dự kiến hàng về đợt 2</label>
+                                            <div class="col-7">
+                                                <div class="input-group date" id="ngaydukienhangvedot2" data-target-input="nearest">
+                                                    <input asp-for="Ngaydukienhangvedot2" type="text" name="ngaydukienhangvedot2" class="form-control datetimepicker-input" data-target="#ngaydukienhangvedot2" required="@(true)">
+                                                    <div class="input-group-append" data-target="#ngaydukienhangvedot2" data-toggle="datetimepicker">
+                                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <a class="btn btn-default" href="javascript: history.go(-1)"><i class="fa fa-arrow-left"></i> Quay lại</a>
+                                <input type="hidden" name="trangthaihangve" id="trangthaihangve" value="Thiếu" />
+                                <button type="submit" class="btn btn-success float-right "><i class="fa fa-check"> </i> Xác nhận</button>
+                            </div>
+                        </div>
+                    }
+
+                    @if (ViewBag.trangthai == "final")
+                    {
+                        <div class="card shadow">
+                            <div class="card-body">
+                                <div class="form-group row">
+                                    <label class="col-5 col-form-label">Model</label>
+                                    <div class="col-7">
+                                        <input asp-for="Model" class="form-control" readonly="readonly" />
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-5 col-form-label">Ngày yêu cầu</label>
+                                    <div class="col-7">
+                                        <input asp-for="Ngayyeucau" class="form-control" readonly="readonly" />
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-5 col-form-label">Ngày đặt hàng</label>
+                                    <div class="col-7">
+                                        <input asp-for="Ngaydathang" class="form-control" readonly="readonly" />
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-5 col-form-label">Ngày dự kiến hàng về</label>
+                                    <div class="col-7">
+                                        <input asp-for="Ngaydukienhangve" class="form-control" readonly="readonly" />
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-5 col-form-label">Ngày hàng về đợt 1</label>
+                                    <div class="col-7">
+                                        <input asp-for="Ngayhangve" class="form-control" readonly="readonly" />
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-5 col-form-label">Ngày dự kiến hàng về đợt 2</label>
+                                    <div class="col-7">
+                                        <input asp-for="Ngaydukienhangvedot2" class="form-control" readonly="readonly" />
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-5 col-form-label">Ngày hàng về đợt 2</label>
+                                    <div class="col-7">
+                                        <input asp-for="Ngayhangvedot2" class="form-control" readonly="readonly" value="@DateTime.Now.ToString("yyyy/MM/dd")" />
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-5 col-form-label">Tên Jig</label>
+                                    <div class="col-7">
+                                        <input asp-for="Tenjig" class="form-control" readonly="readonly" />
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-5 col-form-label">Mã Jig</label>
+                                    <div class="col-7">
+                                        <input asp-for="Majig" class="form-control" readonly="readonly" />
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-5 col-form-label">Tên linh kiện</label>
+                                    <div class="col-7">
+                                        <input asp-for="Tenlinhkien" class="form-control" readonly="readonly" />
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-5 col-form-label">Mã linh kiện</label>
+                                    <div class="col-7">
+                                        <input asp-for="Malinhkien" class="form-control" readonly="readonly" />
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-5 col-form-label">Ghi chú</label>
+                                    <div class="col-7">
+                                        <input asp-for="Ghichu" class="form-control" readonly="readonly" />
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-5 col-form-label">Trạng thái</label>
+                                    <div class="input-group col-7">
+                                        <input asp-for="Trangthai" class="form-control" value="Hàng đã về" readonly="readonly" />
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-5 col-form-label">SL đặt hàng</label>
+                                    <div class="input-group col-7">
+                                        <input asp-for="Soluong" class="form-control" readonly="readonly" />
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">@Model.Donvi</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-5 col-form-label">SL hàng về đợt 1</label>
+                                    <div class="input-group col-7">
+                                        <input asp-for="Soluongvedot1" class="form-control" readonly="readonly" />
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">@Model.Donvi</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card bg-lightblue">
+                                    <div class="card-body">
+                                        <div class="form-group row" style="margin-top:10px">
+                                            <label class="col-5 col-form-label">Số lượng hàng về</label>
+                                            <div class="input-group col-7">
+                                                <input asp-for="Soluongvedot2" class="form-control" value="" required="@(true)" />
+                                                <div class="input-group-append">
+                                                    <span class="input-group-text">@Model.Donvi</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <a class="btn btn-default" href="javascript: history.go(-1)"><i class="fa fa-arrow-left"></i> Quay lại</a>
+                                <input type="hidden" name="trangthaihangve" id="trangthaihangve" value="final" />
+                                <button type="submit" class="btn btn-success float-right "><i class="fa fa-check"> </i> Xác nhận</button>
+                            </div>
+                        </div>
+                    }
+
+                </div>
+                @if (Model.Image != null)
+                {
+                    <div class="col-sm-12 col-md-6">
+                        <div class="card shadow">
+                            <div class="card-body">
+                                <img src="@Url.Content(Model.Image)" alt="Image" style="width:100%" />
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </form>
+    </div>
+</section>
+
+

@@ -1,0 +1,169 @@
+﻿@model webspare.Models.Danhsachlinhkien
+
+@{
+    ViewData["Active"] = "Home";
+
+    ViewData["Title"] = "Themhinhanh";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<title>Thêm hình ảnh</title>
+
+<script src="~/adminlte-master/plugins/jquery/jquery.min.js"></script>
+
+<section class="content-header">
+</section>
+<section class="content">
+    <div class="container-fluid">
+        <form asp-controller="Home" asp-action="Themhinhanh" method="post" enctype="multipart/form-data">
+            <div class="row">
+                <div class="col-sm-12 col-md-6">
+                    <input type="hidden" asp-for="Id" />
+                    <input type="hidden" asp-for="Maker" />
+                    <input type="hidden" asp-for="Donvi" />
+                    <input type="hidden" asp-for="Dongia" />
+                    <input type="hidden" asp-for="Tonkho" />
+                    <input type="hidden" asp-for="Ghichu" />
+                    <div class="card shadow">
+                        <div class="card-header border-success ">
+                            <h3 class="card-title"></i> Thêm hình ảnh cho linh kiện</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-group row">
+                                <label class="col-5 col-form-label">Model</label>
+                                <div class="col-7">
+                                    <input asp-for="Model" class="form-control" readonly="@(true)" />
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-5 col-form-label">Tên Jig</label>
+                                <div class="col-7">
+                                    <input asp-for="Tenjig" class="form-control" readonly="@(true)" />
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-5 col-form-label">Mã Jig</label>
+                                <div class="col-7">
+                                    <input asp-for="Majig" class="form-control" readonly="@(true)" />
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-5 col-form-label">Tên linh kiện</label>
+                                <div class="col-7">
+                                    <input asp-for="Tenlinhkien" class="form-control" readonly="@(true)" />
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-5 col-form-label">Mã linh kiện</label>
+                                <div class="col-7">
+                                    <input asp-for="Malinhkien" class="form-control" readonly="@(true)" />
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                            <label class="col-5 col-form-label">Hình ảnh</label>
+                            <div class="col-7">
+                                <input id="imageFile" name="imageFile" type="file" accept="image/*" class=" imageFile btn  btn-secondary btn-block" />
+                            </div>
+                        </div>
+                        </div>
+                        <div class="card-footer">
+                            <a class="btn btn-default" href="javascript: history.go(-1)"><i class="fa fa-arrow-left"></i> Quay lại</a>
+                            <button type="submit" class="btn btn-success float-right "><i class="fa fa-check"> </i> Hoàn thành</button>
+                        </div>
+                    </div>
+                </div>
+
+                    <div class="col-sm-12 col-md-6">
+                        <div class="card shadow">
+                            <div class="card-body">
+                            <img src="" id="preview" hidden>
+                            <input id="image" type="text" asp-for="Image" class="form-control" hidden />
+                            <img style="width: 100%" src="" id="output">
+                            </div>
+                        </div>
+                    </div>
+                
+            </div>
+        </form>
+    </div>
+</section>
+
+
+
+
+<script>
+    $(document).ready(function () {
+        $('#imageFile').change(function (evt) {
+            var files = evt.target.files;
+            var file = files[0];
+            if (file) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    document.getElementById('preview').src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+
+                delay(2000).then(() => ResizeImage());
+
+            }
+        });
+    });
+    function delay(time) {
+        return new Promise(resolve => setTimeout(resolve, time));
+    }
+
+    function ResizeImage() {
+        if (window.File && window.FileReader && window.FileList && window.Blob) {
+            var filesToUploads = document.getElementById('imageFile').files;
+            var file = filesToUploads[0];
+            if (file) {
+
+                var reader = new FileReader();
+                // Set the image once loaded into file reader
+                reader.onload = function (e) {
+
+                    var img = document.createElement("img");
+                    img.src = e.target.result;
+
+                    var canvas = document.createElement("canvas");
+                    var ctx = canvas.getContext("2d");
+                    ctx.drawImage(img, 0, 0);
+
+                    var MAX_WIDTH = 500;
+                    var MAX_HEIGHT = 500;
+                    var width = img.width;
+                    var height = img.height;
+
+                    if (width > height) {
+                        if (width > MAX_WIDTH) {
+                            height *= MAX_WIDTH / width;
+                            width = MAX_WIDTH;
+                        }
+                    } else {
+                        if (height > MAX_HEIGHT) {
+                            width *= MAX_HEIGHT / height;
+                            height = MAX_HEIGHT;
+                        }
+                    }
+                    canvas.width = width;
+                    canvas.height = height;
+                    var ctx = canvas.getContext("2d");
+                    ctx.drawImage(img, 0, 0, width, height);
+
+                    dataurl = canvas.toDataURL(file.type);
+                    document.getElementById('output').src = dataurl;
+                    console.log(dataurl);
+                    document.getElementById('image').value = dataurl;
+
+                    //document.getElementById('nutthunho').disabled = true;
+                    //document.getElementById('nutxacnhan').disabled = false;
+
+                }
+                reader.readAsDataURL(file);
+            }
+        } else {
+            alert('The File APIs are not fully supported in this browser.');
+        }
+    }
+</script>
+
+

@@ -1,0 +1,630 @@
+﻿@model IEnumerable<webspare.Models.LichsuLaylinhkien>
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    var hoten = HttpContextAccessor.HttpContext.Session.GetString("user");
+    string mode;
+    if (hoten != "Administrator")
+    {
+        mode = "user";
+    }
+    else
+    {
+        mode = "admin";
+    }
+}
+@{
+    ViewData["Title"] = "Lichsulaylinhkien";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Active"] = "4";
+
+}
+
+@{
+    var homnay = (List<LichsuLaylinhkien>)ViewBag.homnay;
+}
+<title>Lịch sử lấy linh kiện</title>
+
+<style>
+    img {
+        width: 100%;
+        vertical-align: middle;
+    }
+
+    table.table-bordered.dataTable tbody th, table.table-bordered.dataTable tbody td {
+        border-bottom-width: 0;
+        vertical-align: middle;
+        text-align: center;
+    }
+
+</style>
+<section class="content-header">
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">
+                        Lịch sử lấy linh kiện  @if (TempData["modelchon"] != null)
+                        {
+                            <b>@TempData["modelchon"]</b>
+                        }
+                    </h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="@Url.Action("Index", "Home")">Trang chủ</a></li>
+                        <li class="breadcrumb-item active">Lịch sử lấy linh kiện</li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+</section>
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                @if (Model == null)
+                {
+                    <div class="row">
+                        <div class="col-sm-12 col-lg-6">
+                            <form asp-controller="Home" asp-action="Lichsulaylinhkien" method="get">
+                                <div class="card card-success collapsed-card">
+                                    <div class="card-header border-success ">
+                                        <h3 class="card-title"> Tra cứu dữ liệu theo ngày</h3>
+                                        <div class="card-tools">
+                                            <button type="button" class="btn btn-tool btn-success" data-card-widget="collapse">
+                                                <i class="fas fa-plus"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="form-group row">
+                                            <label class="col-sm-5 col-form-label" style="text-align:center">Ngày bắt đầu</label>
+                                            <div class="col-sm-7">
+                                                <div class="input-group date" id="ngaybatdau" data-target-input="nearest">
+                                                    <input type="text" name="ngaybatdau" class="form-control datetimepicker-input" data-target="#ngaybatdau">
+                                                    <div class="input-group-append" data-target="#ngaybatdau" data-toggle="datetimepicker">
+                                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-sm-5 col-form-label" style="text-align:center">Ngày kết thúc</label>
+                                            <div class="col-sm-7">
+                                                <div class="input-group date" id="ngayketthuc" data-target-input="nearest">
+                                                    <input type="text" name="ngayketthuc" class="form-control datetimepicker-input" data-target="#ngayketthuc">
+                                                    <div class="input-group-append" data-target="#ngayketthuc" data-toggle="datetimepicker">
+                                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-sm-5 col-form-label" style="text-align:center">Model</label>
+                                            <div class="col-sm-7">
+                                                <select name="model" class="form-control" asp-items="ViewBag.tenmodel"></select>
+                                            </div>
+                                        </div>
+                                        <button type="submit" class="btn btn-success btn-block"><i class="fas fa-search"> </i> Lọc</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="col-12">
+                            <div class="card bg-gray">
+                                <div class="card-header ">
+                                    <h3 class="card-title"> Linh kiện đã lấy trong hôm nay (@DateTime.Now.ToString("dd/MM/yyyy")) </h3>
+                                    <div class="card-tools">
+                                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                            <i class="fas fa-minus"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-sm-2 col-6">
+                                            <div class="description-block">
+                                                <form asp-controller="Home" asp-action="Lichsulaylinhkien" method="get">
+                                                    <input type="hidden" name="ngaybatdau" id="ngaybatdau" value="@DateTime.Now.ToString("yyyy/MM/dd")" />
+                                                    <input type="hidden" name="ngayketthuc" id="ngayketthuc" value="@DateTime.Now.ToString("yyyy/MM/dd")" />
+                                                    <input type="hidden" name="model" id="model" value="IJP" />
+                                                    <button type="submit" class="btn btn-default shadow">
+                                                        @{
+                                                            if (Convert.ToInt32(TempData["demIJP"].ToString()) > 0)
+                                                            {
+                                                                <span class="description-percentage text-danger"><i class="fas fa-caret-up"></i></span>
+                                                            }
+                                                            else
+                                                            {
+                                                                <span class="description-percentage text-success"><i class="fas fa-caret-down"></i></span>
+                                                            }
+                                                        }
+                                                        <h5 class="description-header"> @TempData["demIJP"] <small>linh kiện</small></h5>
+                                                        <span class="description-text">IJP</span>
+                                                    </button>
+                                                </form>
+
+                                            </div>
+                                            <!-- /.description-block -->
+                                        </div>
+                                        <div class="col-sm-2 col-6">
+                                            <div class="description-block ">
+                                                <form asp-controller="Home" asp-action="Lichsulaylinhkien" method="get">
+                                                    <input type="hidden" name="ngaybatdau" id="ngaybatdau" value="@DateTime.Now.ToString("yyyy/MM/dd")" />
+                                                    <input type="hidden" name="ngayketthuc" id="ngayketthuc" value="@DateTime.Now.ToString("yyyy/MM/dd")" />
+                                                    <input type="hidden" name="model" id="model" value="LD2" />
+                                                    <button type="submit" class="btn btn-default shadow">
+
+                                                        @{
+                                                            if (Convert.ToInt32(TempData["demLD2"].ToString()) > 0)
+                                                            {
+                                                                <span class="description-percentage text-danger"><i class="fas fa-caret-up"></i></span>
+                                                            }
+                                                            else
+                                                            {
+                                                                <span class="description-percentage text-success"><i class="fas fa-caret-down"></i></span>
+                                                            }
+                                                        }
+                                                        <h5 class="description-header"> @TempData["demLD2"] <small>linh kiện</small></h5>
+                                                        <span class="description-text">LD2</span>
+                                                    </button>
+                                                </form>
+
+                                            </div>
+                                            <!-- /.description-block -->
+                                        </div>
+                                        <div class="col-sm-2 col-6">
+                                            <div class="description-block ">
+                                                <form asp-controller="Home" asp-action="Lichsulaylinhkien" method="get">
+                                                    <input type="hidden" name="ngaybatdau" id="ngaybatdau" value="@DateTime.Now.ToString("yyyy/MM/dd")" />
+                                                    <input type="hidden" name="ngayketthuc" id="ngayketthuc" value="@DateTime.Now.ToString("yyyy/MM/dd")" />
+                                                    <input type="hidden" name="model" id="model" value="HONTAI" />
+                                                    <button type="submit" class="btn btn-default shadow">
+
+                                                        @{
+                                                            if (Convert.ToInt32(TempData["demHONTAI"].ToString()) > 0)
+                                                            {
+                                                                <span class="description-percentage text-danger"><i class="fas fa-caret-up"></i></span>
+                                                            }
+                                                            else
+                                                            {
+                                                                <span class="description-percentage text-success"><i class="fas fa-caret-down"></i></span>
+                                                            }
+                                                        }
+                                                        <h5 class="description-header"> @TempData["demHONTAI"] <small>linh kiện</small></h5>
+                                                        <span class="description-text">HONTAI</span>
+                                                    </button>
+                                                </form>
+
+                                            </div>
+                                            <!-- /.description-block -->
+                                        </div>
+                                        <div class="col-sm-2 col-6">
+                                            <div class="description-block ">
+                                                <form asp-controller="Home" asp-action="Lichsulaylinhkien" method="get">
+                                                    <input type="hidden" name="ngaybatdau" id="ngaybatdau" value="@DateTime.Now.ToString("yyyy/MM/dd")" />
+                                                    <input type="hidden" name="ngayketthuc" id="ngayketthuc" value="@DateTime.Now.ToString("yyyy/MM/dd")" />
+                                                    <input type="hidden" name="model" id="model" value="FIXING" />
+                                                    <button type="submit" class="btn btn-default shadow">
+
+                                                        @{
+                                                            if (Convert.ToInt32(TempData["demFIXING"].ToString()) > 0)
+                                                            {
+                                                                <span class="description-percentage text-danger"><i class="fas fa-caret-up"></i></span>
+                                                            }
+                                                            else
+                                                            {
+                                                                <span class="description-percentage text-success"><i class="fas fa-caret-down"></i></span>
+                                                            }
+                                                        }
+                                                        <h5 class="description-header"> @TempData["demFIXING"] <small>linh kiện</small></h5>
+                                                        <span class="description-text">FIXING</span>
+                                                    </button>
+                                                </form>
+
+                                            </div>
+                                            <!-- /.description-block -->
+                                        </div>
+                                        <div class="col-sm-2 col-6">
+                                            <div class="description-block ">
+                                                <form asp-controller="Home" asp-action="Lichsulaylinhkien" method="get">
+                                                    <input type="hidden" name="ngaybatdau" id="ngaybatdau" value="@DateTime.Now.ToString("yyyy/MM/dd")" />
+                                                    <input type="hidden" name="ngayketthuc" id="ngayketthuc" value="@DateTime.Now.ToString("yyyy/MM/dd")" />
+                                                    <input type="hidden" name="model" id="model" value="CSD" />
+                                                    <button type="submit" class="btn btn-default shadow">
+
+                                                        @{
+                                                            if (Convert.ToInt32(TempData["demCSD"].ToString()) > 0)
+                                                            {
+                                                                <span class="description-percentage text-danger"><i class="fas fa-caret-up"></i></span>
+                                                            }
+                                                            else
+                                                            {
+                                                                <span class="description-percentage text-success"><i class="fas fa-caret-down"></i></span>
+                                                            }
+                                                        }
+                                                        <h5 class="description-header"> @TempData["demCSD"] <small>linh kiện</small></h5>
+                                                        <span class="description-text">CSD</span>
+                                                    </button>
+                                                </form>
+
+                                            </div>
+                                            <!-- /.description-block -->
+                                        </div>
+                                        <div class="col-sm-2 col-6">
+                                            <div class="description-block">
+                                                <form asp-controller="Home" asp-action="Lichsulaylinhkien" method="get">
+                                                    <input type="hidden" name="ngaybatdau" id="ngaybatdau" value="@DateTime.Now.ToString("yyyy/MM/dd")" />
+                                                    <input type="hidden" name="ngayketthuc" id="ngayketthuc" value="@DateTime.Now.ToString("yyyy/MM/dd")" />
+                                                    <input type="hidden" name="model" id="model" value="ITB-DRIVER" />
+                                                    <button type="submit" class="btn btn-default shadow">
+
+                                                        @{
+                                                            if (Convert.ToInt32(TempData["demITB"].ToString()) > 0)
+                                                            {
+                                                                <span class="description-percentage text-danger"><i class="fas fa-caret-up"></i></span>
+                                                            }
+                                                            else
+                                                            {
+                                                                <span class="description-percentage text-success"><i class="fas fa-caret-down"></i></span>
+                                                            }
+                                                        }
+                                                        <h5 class="description-header"> @TempData["demITB"] <small>linh kiện</small></h5>
+                                                        <span class="description-text">ITB-DRIVER</span>
+                                                    </button>
+                                                </form>
+
+                                            </div>
+                                            <!-- /.description-block -->
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                            <table id="example2" class="table table-bordered table-striped">
+                                <thead>
+                                    <tr style="text-align:center ; font-size:small">
+                                        <th>
+                                            Model
+                                        </th>
+                                        <th>
+                                            Tên Jig
+                                        </th>
+                                        <th>
+                                            Mã Jig
+                                        </th>
+                                        <th>
+                                            Tên linh kiện
+                                        </th>
+                                        <th>
+                                            Mã linh kiện
+                                        </th>
+                                        <th>
+                                            Hình ảnh
+                                        </th>
+                                       
+                                        <th>
+                                            Maker
+                                        </th>
+                                        <th>
+                                            Số lượng
+                                        </th>
+                                        <th>
+                                            Người lấy
+                                        </th>
+                                        <th>
+                                            Ngày giờ lấy
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in homnay)
+                                    {
+                                        <tr>
+                                            <td>
+                                                @if (!String.IsNullOrEmpty(item.Model))
+                                                {
+                                                    @Html.DisplayFor(modelItem => item.Model)
+                                                }
+                                                else
+                                                {
+                                                    <a class="btn btn-block btn-default disabled" style="font-size:smaller">
+                                                        None
+                                                    </a>
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (!String.IsNullOrEmpty(item.Tenjig))
+                                                {
+                                                    @Html.DisplayFor(modelItem => item.Tenjig)
+                                                }
+                                                else
+                                                {
+                                                    <a class="btn btn-block btn-default disabled" style="font-size:smaller">
+                                                        None
+                                                    </a>
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (!String.IsNullOrEmpty(item.Majig))
+                                                {
+                                                    @Html.DisplayFor(modelItem => item.Majig)
+                                                }
+                                                else
+                                                {
+                                                    <a class="btn btn-block btn-default disabled" style="font-size:smaller">
+                                                        None
+                                                    </a>
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (!String.IsNullOrEmpty(item.Tenlinhkien))
+                                                {
+                                                    @Html.DisplayFor(modelItem => item.Tenlinhkien)
+                                                }
+                                                else
+                                                {
+                                                    <a class="btn btn-block btn-default disabled" style="font-size:smaller">
+                                                        None
+                                                    </a>
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (!String.IsNullOrEmpty(item.Malinhkien))
+                                                {
+                                                    @Html.DisplayFor(modelItem => item.Malinhkien)
+                                                }
+                                                else
+                                                {
+                                                    <a class="btn btn-block btn-default disabled" style="font-size:smaller">
+                                                        None
+                                                    </a>
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (!String.IsNullOrEmpty(item.Image))
+                                                {
+                                                    <img src="@item.Image" />
+                                                }
+                                                else
+                                                {
+                                                    <a class="btn btn-block btn-default disabled" style="font-size:smaller">
+                                                        None
+                                                    </a>
+                                                }
+                                            </td>
+                                           
+                                            <td>
+                                                @if (!String.IsNullOrEmpty(item.Maker))
+                                                {
+                                                    @Html.DisplayFor(modelItem => item.Maker)
+                                                }
+                                                else
+                                                {
+                                                    <a class="btn btn-block btn-default disabled" style="font-size:smaller">
+                                                        None
+                                                    </a>
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (item.Soluong != null)
+                                                {
+                                                    <b style="color:red"> @Html.DisplayFor(modelItem => item.Soluong) @item.Donvi</b>
+                                                }
+                                                else
+                                                {
+                                                    <a class="btn btn-block btn-default disabled" style="font-size:smaller">
+                                                        None
+                                                    </a>
+                                                }
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Nguoilay)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Ngaylay)
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+
+
+                }
+                @if (Model != null)
+                {
+                    <a style="margin-bottom:10px" class="btn btn-secondary" href="javascript: history.go(-1)"><i class="fa fa-arrow-left"></i> Quay lại</a>
+
+                    <div class="card  card-dark shadow">
+                        <div class="card-header border-transparent">
+                            <h3 class="card-title">
+                                 Lịch sử lấy linh kiện @{
+                                    if (TempData["ngaybatdau"].ToString() == TempData["ngayketthuc"].ToString())
+                                    {
+                                        <span>trong ngày <b>@TempData["ngayketthuc"]</b></span>
+                                    }
+                                    else
+                                    {
+                                        <span>từ ngày <b>@TempData["ngaybatdau"]</b> đến ngày <b>@TempData["ngayketthuc"]</b></span>
+                                    }
+                                }
+                            </h3>
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                                <button type="button" class="btn btn-tool" data-card-widget="maximize">
+                                    <i class="fas fa-expand"></i>
+                                </button>
+
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <table id="example2" class="table table-bordered table-hover">
+                                <thead>
+                                    <tr style="text-align:center ; font-size:small">
+                                        <th>
+                                            Model
+                                        </th>
+                                        <th>
+                                            Tên Jig
+                                        </th>
+                                        <th>
+                                            Mã Jig
+                                        </th>
+                                        <th>
+                                            Tên linh kiện
+                                        </th>
+                                        <th>
+                                            Mã linh kiện
+                                        </th>
+                                        <th>
+                                            Hình ảnh
+                                        </th>
+                                        <th>
+                                            Maker
+                                        </th>
+                                        <th>
+                                            Số lượng
+                                        </th>
+                                        <th>
+                                            Người lấy
+                                        </th>
+                                        <th>
+                                            Ngày giờ lấy
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td>
+                                                @if (!String.IsNullOrEmpty(item.Model))
+                                                {
+                                                    @Html.DisplayFor(modelItem => item.Model)
+                                                }
+                                                else
+                                                {
+                                                    <a class="btn btn-block btn-default disabled" style="font-size:smaller">
+                                                        None
+                                                    </a>
+                                                }
+                                            </td>
+                                             <td>
+                                                @if (!String.IsNullOrEmpty(item.Tenjig))
+                                                {
+                                                    @Html.DisplayFor(modelItem => item.Tenjig)
+                                                }
+                                                else
+                                                {
+                                                    <a class="btn btn-block btn-default disabled" style="font-size:smaller">
+                                                        None
+                                                    </a>
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (!String.IsNullOrEmpty(item.Majig))
+                                                {
+                                                    @Html.DisplayFor(modelItem => item.Majig)
+                                                }
+                                                else
+                                                {
+                                                    <a class="btn btn-block btn-default disabled" style="font-size:smaller">
+                                                        None
+                                                    </a>
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (!String.IsNullOrEmpty(item.Tenlinhkien))
+                                                {
+                                                    @Html.DisplayFor(modelItem => item.Tenlinhkien)
+                                                }
+                                                else
+                                                {
+                                                    <a class="btn btn-block btn-default disabled" style="font-size:smaller">
+                                                        None
+                                                    </a>
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (!String.IsNullOrEmpty(item.Malinhkien))
+                                                {
+                                                    @Html.DisplayFor(modelItem => item.Malinhkien)
+                                                }
+                                                else
+                                                {
+                                                    <a class="btn btn-block btn-default disabled" style="font-size:smaller">
+                                                        None
+                                                    </a>
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (!String.IsNullOrEmpty(item.Image))
+                                                {
+                                                    <img src="@item.Image" />
+                                                }
+                                                else
+                                                {
+                                                    <a class="btn btn-block btn-default disabled" style="font-size:smaller">
+                                                        None
+                                                    </a>
+                                                }
+                                            </td>
+                                            
+                                            <td>
+                                                @if (!String.IsNullOrEmpty(item.Maker))
+                                                {
+                                                    @Html.DisplayFor(modelItem => item.Maker)
+                                                }
+                                                else
+                                                {
+                                                    <a class="btn btn-block btn-default disabled" style="font-size:smaller">
+                                                        None
+                                                    </a>
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (item.Soluong != null)
+                                                {
+                                                    <b style="color:red"> @Html.DisplayFor(modelItem => item.Soluong) @item.Donvi</b>
+                                                }
+                                                else
+                                                {
+                                                    <a class="btn btn-block btn-default disabled" style="font-size:smaller">
+                                                        None
+                                                    </a>
+                                                }
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Nguoilay)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Ngaylay)
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                }
+
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+

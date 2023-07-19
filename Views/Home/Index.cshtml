@@ -1,0 +1,740 @@
+﻿@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    var hoten = HttpContextAccessor.HttpContext.Session.GetString("user");
+    string mode;
+    if (hoten != "Administrator")
+    {
+        mode = "user";
+    }
+    else
+    {
+        mode = "admin";
+    }
+}
+@model IEnumerable<webspare.Models.Danhsachlinhkien>
+@{
+    ViewData["Title"] = "Homepage";
+    ViewData["Active"] = "1";
+
+}
+@{
+    WebSparePartContext db = new WebSparePartContext();
+}
+<title>Trang chủ</title>
+<script src="~/adminlte-master/plugins/jquery/jquery.min.js"></script>
+
+<style>
+    .modal-dialog {
+        min-height: calc(100vh - 60px);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    img {
+        width: 100%;
+        vertical-align: middle;
+    }
+
+    table.table-bordered.dataTable tbody th, table.table-bordered.dataTable tbody td {
+        border-bottom-width: 0;
+        vertical-align: middle;
+        text-align: center;
+    }
+
+</style>
+<body>
+    <section class="content-header">
+        <div class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1 class="m-0">
+                            <i class="nav-icon fas fa-th"> </i>
+                            Danh sách linh kiện
+                        </h1>
+                    </div><!-- /.col -->
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item"><a href="@Url.Action("Index", "Home")">Trang chủ</a></li>
+                            <li class="breadcrumb-item active">Danh sách linh kiện</li>
+                        </ol>
+                    </div><!-- /.col -->
+                </div><!-- /.row -->
+            </div><!-- /.container-fluid -->
+        </div>
+    </section>
+
+    <section class="content">
+        <div class="container-fluid">
+            <div class="col-12">
+                @if (Model == null)
+                {
+                    <div class="row">
+                        <div class="col-4">
+                            <div class="small-box bg-gradient-danger shadow ">
+                                <div class="inner">
+                                    <h3>@TempData["slhet"]<sup style="font-size: 10px"> linh kiện</sup></h3>
+                                    <p>Đang hết tồn kho</p>
+                                </div>
+                                <div class="icon">
+                                    <i class="icon fas fa-exclamation-triangle"></i>
+                                </div>
+                                <a asp-action="Danhsachdanghet" asp-controller="Home" class="small-box-footer">Xem chi tiết <i class="fas fa-arrow-circle-right"></i></a>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="small-box bg-gradient-warning shadow ">
+                                <div class="inner">
+                                    <h3>@TempData["sldangyeucau"]<sup style="font-size: 10px"> linh kiện</sup></h3>
+                                    <p>Đang yêu cầu đặt hàng</p>
+                                </div>
+                                <div class="icon">
+                                    <i class="fas fa-bullhorn"></i>
+                                </div>
+                                <a asp-action="Lichsudathang" asp-controller="Home" class="small-box-footer">Xem chi tiết <i class="fas fa-arrow-circle-right"></i></a>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="small-box bg-gradient-info shadow ">
+                                <div class="inner">
+                                    <h3>@TempData["sldangdat"]<sup style="font-size: 10px"> linh kiện</sup></h3>
+                                    <p>Đã đặt hàng, đang chờ hàng về</p>
+                                </div>
+                                <div class="icon">
+                                    <i class="fas fa-clock"></i>
+                                </div>
+                                <a asp-action="Lichsudathang" asp-controller="Home" class="small-box-footer">Xem chi tiết <i class="fas fa-arrow-circle-right"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="row" style="vertical-align:central">
+                        <div class="col-4">
+                            <form asp-controller="Home" asp-action="Index" method="get">
+                                <input type="hidden" name="model" id="model" value="IJP" title="Xem chi tiết" />
+                                <div class="info-box bg-gradient-secondary ">
+                                    <button type="submit" class=" btn bg-gradient-light btn-block"> <b> <i class="fa fa-folder-open"></i> Model IJP</b> </button>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="col-8">
+                            <div class="row">
+                                @if (@Convert.ToInt32(TempData["slhet_IJP"]) > 0)
+                                {
+                                    <div class="col-4">
+                                        <div class="info-box bg-gray ">
+                                            <div class="info-box-content">
+                                                <span class="info-box-text text-center"><i style="color:red" class="icon fas fa-exclamation-triangle"> </i> Đang hết tồn kho</span>
+                                                <span class="info-box-number text-center mb-0">@TempData["slhet_IJP"] <small>linh kiện</small></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                                @if (@Convert.ToInt32(TempData["sldangyeucau_IJP"]) > 0)
+                                {
+                                    <div class="col-4">
+                                        <div class="info-box bg-gray">
+                                            <div class="info-box-content">
+                                                <span class="info-box-text text-center "><i style="color:orange" class="icon fas fa-bullhorn"> </i> Đang yêu cầu đặt hàng</span>
+                                                <span class="info-box-number text-center mb-0 "> @TempData["sldangyeucau_IJP"] <small>linh kiện</small></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                                @if (@Convert.ToInt32(TempData["sldangdat_IJP"]) > 0)
+                                {
+                                    <div class="col-4">
+                                        <div class="info-box bg-gray">
+                                            <div class="info-box-content">
+                                                <span class="info-box-text text-center "><i style="color:blue" class="icon fas fa-clock"> </i> Đang chờ hàng về</span>
+                                                <span class="info-box-number text-center  mb-0 ">@TempData["sldangdat_IJP"] <small>linh kiện</small></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row" style="vertical-align:central">
+                        <div class="col-4">
+                            <form asp-controller="Home" asp-action="Index" method="get">
+                                <input type="hidden" name="model" id="model" value="LD2" />
+                                <div class="info-box bg-gradient-secondary ">
+                                    <button type="submit" class=" btn bg-gradient-light btn-block"> <b> <i class="fa fa-folder-open"></i>  Model LD2</b> </button>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="col-8">
+                            <div class="row">
+                                @if (@Convert.ToInt32(TempData["slhet_LD2"]) > 0)
+                                {
+                                    <div class="col-4">
+                                        <div class="info-box bg-gray ">
+                                            <div class="info-box-content">
+                                                <span class="info-box-text text-center"><i style="color:red" class="icon fas fa-exclamation-triangle"> </i> Đang hết tồn kho</span>
+                                                <span class="info-box-number text-center mb-0">@TempData["slhet_LD2"] <small>linh kiện</small></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                                @if (@Convert.ToInt32(TempData["sldangyeucau_LD2"]) > 0)
+                                {
+                                    <div class="col-4">
+                                        <div class="info-box bg-gray">
+                                            <div class="info-box-content">
+                                                <span class="info-box-text text-center "><i style="color:orange" class="icon fas fa-bullhorn"> </i> Đang yêu cầu đặt hàng</span>
+                                                <span class="info-box-number text-center mb-0 "> @TempData["sldangyeucau_LD2"] <small>linh kiện</small></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                                @if (@Convert.ToInt32(TempData["sldangdat_LD2"]) > 0)
+                                {
+                                    <div class="col-4">
+                                        <div class="info-box bg-gray">
+                                            <div class="info-box-content">
+                                                <span class="info-box-text text-center "><i style="color:blue" class="icon fas fa-clock"> </i> Đang chờ hàng về</span>
+                                                <span class="info-box-number text-center  mb-0 ">@TempData["sldangdat_LD2"] <small>linh kiện</small></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row" style="vertical-align:central">
+                        <div class="col-4">
+                            <form asp-controller="Home" asp-action="Index" method="get">
+                                <input type="hidden" name="model" id="model" value="HONTAI" />
+                                <div class="info-box bg-gradient-secondary ">
+                                    <button type="submit" class=" btn bg-gradient-light btn-block"> <b> <i class="fa fa-folder-open"></i>  Model HONTAI</b> </button>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="col-8">
+                            <div class="row">
+                                @if (@Convert.ToInt32(TempData["slhet_HONTAI"]) > 0)
+                                {
+                                    <div class="col-4">
+                                        <div class="info-box bg-gray ">
+                                            <div class="info-box-content">
+                                                <span class="info-box-text text-center"><i style="color:red" class="icon fas fa-exclamation-triangle"> </i> Đang hết tồn kho</span>
+                                                <span class="info-box-number text-center mb-0">@TempData["slhet_HONTAI"] <small>linh kiện</small></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                                @if (@Convert.ToInt32(TempData["sldangyeucau_HONTAI"]) > 0)
+                                {
+                                    <div class="col-4">
+                                        <div class="info-box bg-gray">
+                                            <div class="info-box-content">
+                                                <span class="info-box-text text-center "><i style="color:orange" class="icon fas fa-bullhorn"> </i> Đang yêu cầu đặt hàng</span>
+                                                <span class="info-box-number text-center mb-0 "> @TempData["sldangyeucau_HONTAI"] <small>linh kiện</small></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                                @if (@Convert.ToInt32(TempData["sldangdat_HONTAI"]) > 0)
+                                {
+                                    <div class="col-4">
+                                        <div class="info-box bg-gray">
+                                            <div class="info-box-content">
+                                                <span class="info-box-text text-center "><i style="color:blue" class="icon fas fa-clock"> </i> Đang chờ hàng về</span>
+                                                <span class="info-box-number text-center  mb-0 ">@TempData["sldangdat_HONTAI"] <small>linh kiện</small></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row" style="vertical-align:central">
+                        <div class="col-4">
+                            <form asp-controller="Home" asp-action="Index" method="get">
+                                <input type="hidden" name="model" id="model" value="FIXING" />
+                                <div class="info-box bg-gradient-secondary ">
+                                    <button type="submit" class=" btn bg-gradient-light btn-block"> <b> <i class="fa fa-folder-open"></i>  Model FIXING</b> </button>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="col-8">
+                            <div class="row">
+                                @if (@Convert.ToInt32(TempData["slhet_fix"]) > 0)
+                                {
+                                    <div class="col-4">
+                                        <div class="info-box bg-gray ">
+                                            <div class="info-box-content">
+                                                <span class="info-box-text text-center"><i style="color:red" class="icon fas fa-exclamation-triangle"> </i> Đang hết tồn kho</span>
+                                                <span class="info-box-number text-center mb-0">@TempData["slhet_fix"] <small>linh kiện</small></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                                @if (@Convert.ToInt32(TempData["sldangyeucau_fix"]) > 0)
+                                {
+                                    <div class="col-4">
+                                        <div class="info-box bg-gray">
+                                            <div class="info-box-content">
+                                                <span class="info-box-text text-center "><i style="color:orange" class="icon fas fa-bullhorn"> </i> Đang yêu cầu đặt hàng</span>
+                                                <span class="info-box-number text-center mb-0 "> @TempData["sldangyeucau_fix"] <small>linh kiện</small></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                                @if (@Convert.ToInt32(TempData["sldangdat_fix"]) > 0)
+                                {
+                                    <div class="col-4">
+                                        <div class="info-box bg-gray">
+                                            <div class="info-box-content">
+                                                <span class="info-box-text text-center "><i style="color:blue" class="icon fas fa-clock"> </i> Đang chờ hàng về</span>
+                                                <span class="info-box-number text-center  mb-0 ">@TempData["sldangdat_fix"] <small>linh kiện</small></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row" style="vertical-align:central">
+                        <div class="col-4">
+                            <form asp-controller="Home" asp-action="Index" method="get">
+                                <input type="hidden" name="model" id="model" value="CSD" />
+                                <div class="info-box bg-gradient-secondary ">
+                                    <button type="submit" class=" btn bg-gradient-light btn-block"> <b> <i class="fa fa-folder-open"></i>  Model CSD</b> </button>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="col-8">
+                            <div class="row">
+                                @if (@Convert.ToInt32(TempData["slhet_csd"]) > 0)
+                                {
+                                    <div class="col-4">
+                                        <div class="info-box bg-gray ">
+                                            <div class="info-box-content">
+                                                <span class="info-box-text text-center"><i style="color:red" class="icon fas fa-exclamation-triangle"> </i> Đang hết tồn kho</span>
+                                                <span class="info-box-number text-center mb-0">@TempData["slhet_csd"] <small>linh kiện</small></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                                @if (@Convert.ToInt32(TempData["sldangyeucau_csd"]) > 0)
+                                {
+                                    <div class="col-4">
+                                        <div class="info-box bg-gray">
+                                            <div class="info-box-content">
+                                                <span class="info-box-text text-center "><i style="color:orange" class="icon fas fa-bullhorn"> </i> Đang yêu cầu đặt hàng</span>
+                                                <span class="info-box-number text-center mb-0 "> @TempData["sldangyeucau_csd"] <small>linh kiện</small></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                                @if (@Convert.ToInt32(TempData["sldangdat_csd"]) > 0)
+                                {
+                                    <div class="col-4">
+                                        <div class="info-box bg-gray">
+                                            <div class="info-box-content">
+                                                <span class="info-box-text text-center "><i style="color:blue" class="icon fas fa-clock"> </i> Đang chờ hàng về</span>
+                                                <span class="info-box-number text-center  mb-0 ">@TempData["sldangdat_csd"] <small>linh kiện</small></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row" style="vertical-align:central">
+                        <div class="col-4">
+                            <form asp-controller="Home" asp-action="Index" method="get">
+                                <input type="hidden" name="model" id="model" value="ITB-DRIVER" />
+                                <div class="info-box bg-gradient-secondary ">
+                                    <button type="submit" class=" btn bg-gradient-light btn-block"> <b> <i class="fa fa-folder-open"></i>  Model ITB-DRIVER</b> </button>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="col-8">
+                            <div class="row">
+                                @if (@Convert.ToInt32(TempData["slhet_itb"]) > 0)
+                                {
+                                    <div class="col-4">
+                                        <div class="info-box bg-gray ">
+                                            <div class="info-box-content">
+                                                <span class="info-box-text text-center"><i style="color:red" class="icon fas fa-exclamation-triangle"> </i> Đang hết tồn kho</span>
+                                                <span class="info-box-number text-center mb-0">@TempData["slhet_HONTAI"] <small>linh kiện</small></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                                @if (@Convert.ToInt32(TempData["sldangyeucau_HONTAI"]) > 0)
+                                {
+                                    <div class="col-4">
+                                        <div class="info-box bg-gray">
+                                            <div class="info-box-content">
+                                                <span class="info-box-text text-center "><i style="color:orange" class="icon fas fa-bullhorn"> </i> Đang yêu cầu đặt hàng</span>
+                                                <span class="info-box-number text-center mb-0 "> @TempData["sldangyeucau_HONTAI"] <small>linh kiện</small></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                                @if (@Convert.ToInt32(TempData["sldangdat_HONTAI"]) > 0)
+                                {
+                                    <div class="col-4">
+                                        <div class="info-box bg-gray">
+                                            <div class="info-box-content">
+                                                <span class="info-box-text text-center "><i style="color:blue" class="icon fas fa-clock"> </i> Đang chờ hàng về</span>
+                                                <span class="info-box-number text-center  mb-0 ">@TempData["sldangdat_HONTAI"] <small>linh kiện</small></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                  
+
+                }
+                @if (Model != null)
+                {
+
+                    <div class="card card-navy ">
+                        <div class="card-header border-transparent">
+                            <h3 class="card-title"><i class="fa fa-bars"> </i> Model <b>@ViewData["mdl"] </b></h3>
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="maximize">
+                                    <i class="fas fa-expand"></i>
+                                </button>
+
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-lg-3 col-6">
+                                    <div class="small-box bg-gray ">
+                                        <div class="inner">
+                                            <h3>@TempData["sl"]</h3>
+                                            <p>Tổng số linh kiện</p>
+                                        </div>
+                                        <div class="icon">
+                                            <i class="fas fa-tag"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3 col-6">
+                                    <div class="small-box bg-danger ">
+                                        <div class="inner">
+                                            <h3>@TempData["slhet"]<sup style="font-size: 10px"> linh kiện</sup></h3>
+                                            <p>Đang hết tồn kho</p>
+                                        </div>
+                                        <div class="icon">
+                                            <i class="icon fas fa-exclamation-triangle"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3 col-6">
+                                    <div class="small-box bg-warning ">
+                                        <div class="inner">
+                                            <h3>@TempData["sldangyeucau"]<sup style="font-size: 10px"> linh kiện</sup></h3>
+                                            <p>Đang yêu cầu đặt hàng</p>
+                                        </div>
+                                        <div class="icon">
+                                            <i class="fas fa-bullhorn"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3 col-6">
+                                    <div class="small-box bg-info ">
+                                        <div class="inner">
+                                            <h3>@TempData["sldangdat"]<sup style="font-size: 10px"> linh kiện</sup></h3>
+                                            <p>Đang đợi hàng về</p>
+                                        </div>
+                                        <div class="icon">
+                                            <i class="fas fa-clock"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <table id="example1" class="table table-bordered  table-striped">
+                                <thead>
+                                    <tr style="text-align:center ; font-size:small">
+                                        @if (mode == "admin")
+                                        {
+                                            <th>
+                                            </th>
+                                        }
+                                        <th>
+                                        </th>
+                                        <th>
+                                            Jig name
+                                        </th>
+                                        <th>
+                                            Jig no.
+                                        </th>
+                                        <th>
+                                            Tên linh kiện
+                                        </th>
+                                        <th>
+                                            Mã linh kiện
+                                        </th>
+                                        <th>
+                                            Ghi chú
+                                        </th>
+                                        <th>
+                                            Hình ảnh
+                                        </th>
+                                        <th>
+                                            Maker
+                                        </th>
+                                        <th>
+                                            Giá
+                                        </th>
+                                        <th>
+                                            Đơn vị
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model)
+                                    {
+                                        var checktinhtrang_dangyeucaudat = db.Dathangs.Where(x => (x.Tenlinhkien == item.Tenlinhkien && x.Malinhkien == item.Malinhkien && x.Trangthai == "Yêu cầu đặt hàng")).Count();
+
+                                        var checktinhtrang_dangdat = db.Dathangs.Where(x => (x.Tenlinhkien == item.Tenlinhkien && x.Malinhkien == item.Malinhkien && x.Trangthai == "Đang đặt hàng")).Count();
+
+                                        var checktinhtrang_dangdatthieu = db.Dathangs.Where(x => (x.Tenlinhkien == item.Tenlinhkien && x.Malinhkien == item.Malinhkien && x.Trangthai == "Hàng về thiếu")).Count();
+
+                                        <tr>
+                                            @if (mode == "admin")
+                                            {
+                                                <td style="margin:auto">
+                                                    <a asp-action="Sua" asp-route-id="@item.Id" class="btn btn-secondary btn-sm btn-block">Sửa</a>
+                                                    <a asp-action="Xoa" asp-route-id="@item.Id" class="btn btn-secondary btn-sm btn-block">Xóa</a>
+                                                </td>
+                                            }
+                                            @if (item.Tonkho > 0)
+                                            {
+                                                <td style="text-align:center">
+                                                    <div class="card">
+                                                        <span class="badge badge-success shadow">Tồn kho : @item.Tonkho</span>
+                                                        @if (checktinhtrang_dangyeucaudat > 0)
+                                                        {
+                                                            <span class="badge badge-warning shadow"> Đã báo đặt hàng</span>
+                                                        }
+                                                        @if (checktinhtrang_dangdat > 0)
+                                                        {
+                                                            <span class="badge badge-primary shadow"> Đang đặt hàng</span>
+                                                        }
+                                                    </div>
+                                                    <button class="btn btn-sm bg-indigo" title="Lấy linh kiện">
+                                                        <a asp-action="Laylinhkien" asp-route-id="@item.Id">
+                                                            <i class="fas fa-inbox"></i>
+                                                        </a>
+                                                    </button>
+
+                                                    @if (checktinhtrang_dangyeucaudat > 0 || checktinhtrang_dangdat > 0 || checktinhtrang_dangdatthieu > 0)
+                                                    {
+                                                        <button class="btn btn-sm bg-gray disabled" title="Yêu cầu đặt hàng">
+                                                            <a>
+                                                                <i class="fas fa-cart-plus"> </i>
+                                                            </a>
+                                                        </button>
+                                                    }
+                                                    else
+                                                    {
+                                                        <button class="btn btn-sm bg-warning" title="Yêu cầu đặt hàng">
+                                                            <a asp-action="Dathang" asp-route-id="@item.Id">
+                                                                <i class="fas fa-cart-plus"> </i>
+                                                            </a>
+                                                        </button>
+                                                    }
+                                                </td>
+                                            }
+                                            else
+                                            {
+                                                <td style="text-align:center">
+                                                    <div class="card">
+                                                        <span class="badge badge-danger shadow"><i class="fas fa-exclamation-triangle"> </i> Hết tồn kho</span>
+                                                        @if (checktinhtrang_dangyeucaudat > 0)
+                                                        {
+                                                            <span class="badge badge-warning  shadow"> Đã báo đặt hàng</span>
+                                                        }
+                                                        @if (checktinhtrang_dangdat > 0)
+                                                        {
+                                                            <span class="badge badge-primary shadow"> Đang đặt hàng</span>
+                                                        }
+                                                    </div>
+                                                    <button class="btn btn-sm bg-gray disabled" title="Lấy linh kiện">
+                                                        <a>
+                                                            <i class="fas fa-inbox"></i>
+                                                        </a>
+                                                    </button>
+                                                    @if (checktinhtrang_dangyeucaudat > 0 || checktinhtrang_dangdat > 0 || checktinhtrang_dangdatthieu > 0)
+                                                    {
+                                                        <button class="btn btn-sm bg-gray disabled" title="Yêu cầu đặt hàng">
+                                                            <a>
+                                                                <i class="fas fa-cart-plus"> </i>
+                                                            </a>
+                                                        </button>
+                                                    }
+                                                    else
+                                                    {
+                                                        <button class="btn btn-sm bg-warning" title="Yêu cầu đặt hàng">
+                                                            <a asp-action="Dathang" asp-route-id="@item.Id">
+                                                                <i class="fas fa-cart-plus"> </i>
+                                                            </a>
+                                                        </button>
+                                                    }
+                                                </td>
+                                            }
+                                            <td>
+                                                @if (!String.IsNullOrEmpty(item.Tenjig))
+                                                {
+                                                    @Html.DisplayFor(modelItem => item.Tenjig)
+                                                }
+                                                else
+                                                {
+                                                    <a class="btn btn-default btn-sm disabled" style="font-size:smaller">
+                                                        None
+                                                    </a>
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (!String.IsNullOrEmpty(item.Majig))
+                                                {
+                                                    @Html.DisplayFor(modelItem => item.Majig)
+                                                }
+                                                else
+                                                {
+                                                    <a class="btn btn-default btn-sm disabled" style="font-size:smaller">
+                                                        None
+                                                    </a>
+                                                }
+                                            </td>
+                                            <td class="col-2">
+                                                @if (!String.IsNullOrEmpty(item.Tenlinhkien))
+                                                {
+                                                    @Html.DisplayFor(modelItem => item.Tenlinhkien)
+                                                }
+                                                else
+                                                {
+                                                    <a class="btn btn-default btn-sm disabled" style="font-size:smaller">
+                                                        None
+                                                    </a>
+                                                }
+                                            </td>
+                                            <td class="col-2">
+                                                @if (!String.IsNullOrEmpty(item.Malinhkien))
+                                                {
+                                                    @Html.DisplayFor(modelItem => item.Malinhkien)
+                                                }
+                                                else
+                                                {
+                                                    <a class="btn btn-default btn-sm disabled" style="font-size:smaller">
+                                                        None
+                                                    </a>
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (item.Ghichu != null)
+                                                {
+                                                    @Html.DisplayFor(modelItem => item.Ghichu)
+                                                }
+                                                else
+                                                {
+                                                    <a class="btn btn-sm btn-default disabled" style="font-size:smaller">
+                                                        None
+                                                    </a>
+                                                }
+                                            </td>
+                                            <td class="col-2">
+                                                @if (!String.IsNullOrEmpty(item.Image))
+                                                {
+                                                    <a href="#" class="pop">
+                                                        <img style="min-width:150px" src="@item.Image">
+                                                    </a>
+                                                }
+                                                else
+                                                {
+                                                    <a asp-action="Themhinhanh" asp-route-id="@item.Id" class="btn btn-app bg-default">
+                                                        <i class="fas fa-camera"></i> Thêm ảnh
+                                                    </a>
+                                                }
+                                            </td>
+                                            <td class="col-2">
+                                                @if (!String.IsNullOrEmpty(item.Maker))
+                                                {
+                                                    @Html.DisplayFor(modelItem => item.Maker)
+                                                }
+                                                else
+                                                {
+                                                    <a class="btn btn-sm btn-default disabled" style="font-size:smaller">
+                                                        None
+                                                    </a>
+                                                }
+                                            </td>
+                                            <td class="col-2">
+                                                @if (item.Dongia != null)
+                                                {
+                                                    @Html.DisplayFor(modelItem => item.Dongia)
+                                                }
+                                                else
+                                                {
+                                                    <a class="btn btn-sm btn-default disabled" style="font-size:smaller">
+                                                        None
+                                                    </a>
+                                                }
+                                            </td>
+                                            <td class="col-2">
+                                                @if (item.Donvi != null)
+                                                {
+                                                    @Html.DisplayFor(modelItem => item.Donvi)
+                                                }
+                                                else
+                                                {
+                                                    <a class="btn btn-sm btn-default disabled" style="font-size:smaller">
+                                                        None
+                                                    </a>
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </section>
+</body>
+
+
+
+
+<div class="modal fade" id="imagemodal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <img src="" class="imagepreview" style="width: 100%;">
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $(function () {
+        $('.pop').on('click', function () {
+            $('.imagepreview').attr('src', $(this).find('img').attr('src'));
+            $('#imagemodal').modal('show');
+        });
+    });
+</script>
+
+
+

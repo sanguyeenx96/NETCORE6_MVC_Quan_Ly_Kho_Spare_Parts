@@ -1,0 +1,63 @@
+﻿@model webspare.Models.TblAdmin
+<!DOCTYPE html>
+@{
+    Layout = null;
+}
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Đăng nhập</title>
+
+    <link rel="stylesheet" href="~/adminlte-master/plugins/fontawesome-free/css/all.min.css">
+    <link rel="stylesheet" href="~/adminlte-master/dist/css/adminlte.min.css">
+</head>
+<body class="hold-transition login-page">
+    <form asp-controller="Home" asp-action="Login" method="post">        
+        <div class="login-box">
+            <div class="login-logo">
+                <a href="../../index2.html"><b> <i class="fa fa-archive" aria-hidden="true"></i>MFE</b>spareparts</a>
+            </div>
+            <div class="card">
+                <div class="card-body login-card-body">
+                    <p class="login-box-msg">Nhập tên đăng nhập và mật khẩu</p>
+
+                        <div class="input-group mb-3">
+                            <input asp-for="AdName" type="text" class="form-control" placeholder="Username">
+                            <div class="input-group-append">
+                                <div class="input-group-text">
+                                    <span class="fas fa-user"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="input-group mb-3">
+                        <input asp-for="AdPass" type="password" class="form-control" placeholder="Password">
+                            <div class="input-group-append">
+                                <div class="input-group-text">
+                                    <span class="fas fa-lock"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">ĐĂNG NHẬP</button>
+                </div>
+                <!-- /.login-card-body -->
+            </div>
+        </div>
+    </form>
+    <div style="margin-top:20px">
+        @if (ViewBag.msg != null)
+        {
+            <script>
+                alert("Tên đăng nhập hoặc mật khẩu sai!")
+                </script>
+            
+        }
+    </div>
+    <!-- /.login-box -->
+    <!-- jQuery -->
+    <script src="~/adminlte-master/plugins/jquery/jquery.min.js"></script>
+    <!-- Bootstrap 4 -->
+    <script src="~/adminlte-master/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
