@@ -1,4 +1,4 @@
-# NETCORE6_MVC_Quan_Ly_Kho_Spare_Parts
+# NETCORE6MVC Web app quản lý kho (ver2)
 Quản lý kho linh kiện, chức năng quản lý tồn kho, thông báo hết linh kiện, nhập xuất linh kiện, quản lý tình trạng các đơn đặt hàng,...
 
 ![1](https://github.com/sanguyeenx96/NETCORE6_MVC_Quan_Ly_Kho_Spare_Parts/assets/103011257/682cb7ee-f5bc-41d5-a608-dd821063bc8a)
